@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Gestione Agenda</title>
+<link rel="stylesheet" href="agenda.css">
+<script src="gestioneAgenda.js" charset="UFT-8" defer></script>
+
+
+
+</head>
+<body>    
+    <br>      
+    <form action="" style="border: solid black; padding: 5px; margin-left: 80%; border-radius: 8px;">
+        <b>Vai alla data:</b>
+        <input type="date" name="data">
+        <input type="submit" value="Vai">
+    </form>
+    <br>
+
+    <table style="height: 580px;">      
+        <td>
+            <a th:href="@{/GestioneAgenda(data=${dataPrecedente})}"><img src="images/previous.png" style="width:50px; " alt=""></a>
+        </td>
+
+        <td th:each="giorno : ${giorni}" style="border: darkgrey solid;border-radius: 5px; width:310px; position: relative; vertical-align: top; background: #BFBFBF;border-radius:5px;">
+            
+            <div th:text="${giorno.formattedDay}"  class="calendarDay"></div>
+            <br>
+            <div class="addButton" th:if="${giorno.isPast}" th:date="${giorno.dayOfYear}"><img src="images/add-button.png" alt="" style="width:25px; vertical-align: middle; font-size: 14px; ">&nbsp;Aggiungi una fascia oraria</div>
+                <div th:if="${#lists.isEmpty(giorno.timebands)}"> <br> <span style="font-size: 12px;">Nessuna fascia oraria inserita per questo giorno</span></div>
+                
+                <div th:each="disp : ${giorno.timebands}"  class="timeband">
+                    <span class="modifyTimeband" th:if="${disp.isPast}" th:timebandId="${disp.id}" th:data="${disp.data}" th:inizio="${disp.beginTime}" th:fine="${disp.endTime}" th:length="${disp.standardAppointmentLength}">&nbsp; Modifica &nbsp;</span>
+                    <p style="font-size: smaller; font-weight: bold;">Fascia oraria: <br> <b style="font-weight: bolder;" th:text="${disp.timeband}"></b>              
+                        
+                        <div th:each="app : ${disp.appuntamenti}"  class="appointment" th:appointmentId="${app.id}" th:name="${app.paziente.patientDetails.name}" th:address="${app.paziente.patientDetails.address}" th:phone="${app.paziente.patientDetails.phone}"  th:data="${app.date}" th:start="${app.formattedStartTime}" th:end="${app.formattedEndTime}">
+                                <p>
+                                    <b>Appuntamento preso:</b>
+                                    <br>
+                                    <i th:text="${app.formattedTimeband}" style="color: white;"></i>
+                                </p>
+                                <hr>
+                                <i>Paziente:</i>
+                                <br>
+                                <i th:text="${app.paziente.patientDetails.name}"></i>
+                                <br>
+                                <br>
+                                <span class="modifyAppointment">clicca per vedere dettagli o modificare</span>
+                        </div>
+                        <div class="addAppointment" th:if="${giorno.isPast}" th:idDisponibilita="${disp.id}" th:data="${disp.data}"> <img src="images/add-button.png" style="width: 20px; vertical-align: middle;" alt="">&nbsp; Aggiungi appuntamento</div>
+                    </p> 
+                </div>
+        </td>
+
+        <td>
+            <a th:href="@{/GestioneAgenda(data=${dataSuccessiva})}"> <img src="images/next.png" style="width:50px;" alt=""></a>
+        </td>
+    </table>
+    <br>    
+    
+    
+    
+
+
+    <div class="modal" id="insertTimebandModal">
+        <span class="close" onclick="closeModal(event);" style="cursor: pointer;">&times;&nbsp;</span>
+
+        <form method="post" action="MakeTimeband" style="border: solid black; margin: auto; width: 50%; padding: 20px; margin-top: 10%; border-radius: 10px; background: darkgrey;">
+            
+            <p>Inserisci una fascia oraria</p>
+            Giorno:<input type="date" name="data" id="timebandDate" required>
+            <br>
+            Ora inizio:<input type="time" name="inizio" id="" required>
+            <br>
+            Ora fine:<input type="time" name="fine" id="" required>
+            <br>
+            Durata degli appuntamenti: <select name="minutes" id="standardLength"> <option th:each="min: ${minutes}" th:value="${min}" th:text="${min}"></option></select> minuti.
+            <br>
+            <input type="submit" required>
+        </form>
+
+    </div>
+   
+    <br>
+
+
+    <div class="modal" id="insertAppointment">
+        <span class="close" onclick="closeModal(event);" style="cursor: pointer;">&times;&nbsp;</span>
+
+        <form method="post" action="MakeAppointment" style="border: solid black; margin: auto; width: 50%; padding: 20px; margin-top: 10%; border-radius: 10px; background: darkgrey;">
+            <p>Inserisci un appuntamento</p>
+            <input type="hidden" name="disponibilitaId" id="idDisponibilita">
+            Data: <input type="date" name="date" id="appointmentDate">
+            <br>
+            <br>
+            Ora inizio: <input type="time" name="inizio" id="">
+            Ora fine: <input type="time" name="fine" id="">
+            <br> <br>
+            <select name="idPaziente" id="isPaziente" required>
+                <option value="">Seleziona un paziente...</option>
+                <option th:each="paziente : ${pazienti}" th:value="${paziente.id}" th:text="${paziente.patientDetails.name}"></option>
+            </select>
+            <br>
+            <br>    
+            Note: <input type="text" name="note" id="">
+            <input type="submit" value="Invia">
+        </form>
+
+    </div>
+
+   
+
+    <br>
+
+    <div class="modal" id="ModTimeband">
+        <span class="close" onclick="closeModal(event);" style="cursor: pointer;">&times;&nbsp;</span>
+
+        
+        <br>
+        <form method="post" action="ModifyTimeband" style="border: solid black; margin: auto; width: 50%; padding: 20px; margin-top: 10%; border-radius: 10px; background: darkgrey;">
+            <p>Modifia fascia:</p>
+            
+            <input type="hidden" name="timebandId" id="modifyTimebandId" required readonly>
+            
+            Data: <input type="date" name="data" id="ModTimebandDate" required readonly>
+            <br>
+            Ora inizio: <input type="time" name="inizio" id="ModBegintime" required>
+            Ora Fine: <input type="time" name="fine" id="ModEndtime" required>
+            <br>
+            Durata degli appuntamenti: <select name="minutes" id="ModstandardLength" required> <option th:each="min: ${minutes}" th:value="${min}" th:text="${min}"></option></select> minuti.
+            <br>
+            <input type="submit" value="Apportare modifiche">
+        </form>
+        <br>
+        <form method="POST" action="DeleteTimeband" onsubmit="return confirm('La cancellazione della fascia oraria eliminerà tutti gli appuntamenti connessi.');" style="border: solid black; margin: auto; width: 50%; padding: 20px; border-radius: 10px; background: darkgrey;">
+            <input type="hidden" name="timebandId" id="deleteTimebandId" required readonly>
+            <input type="submit" value="Elimina fascia oraria">
+        </form>
+    </div>
+
+    <br>
+    <div class="modal" id="modificaAppuntamento" style="border: solid black;"> 
+        
+        <span class="close" onclick="closeModal(event);" style="cursor: pointer;">&times;&nbsp;</span>
+
+        <div style="border: solid black; margin: auto; width: 50%; padding: 20px; margin-top: 10%; border-radius: 10px; background: darkgrey;">
+            <p><b>Dettagli paziente:</b></p>
+            <p id="nome"></p>
+            <p id="indirizzo"></p>
+            <p id="telefono"></p>
+            <p><b>Dettagli Appuntamento:</b></p>
+            <form method="post" action="ModifyAppointment">
+                 <input type="hidden" name="appointmentId" id="ModAppointmentId" required >
+                Data: <input type="date" name="data" required id="ModAppointmentDate">
+                Inizio: <input type="time" name="inizio" id="ModAppointmentStart" required>
+                Fine: <input type="time" name="fine" id="ModAppointmentEnd" required>
+                <input type="submit" value="Modifica">
+            </form>
+            <br>
+            <form method="POST" action="DeleteAppointment">
+                 <input type="hidden" name="appointmentId" id="DelAppointmentId">
+                <input type="submit" value="Elimina appuntamento">
+            </form>
+            <br>
+        </div>
+
+    </div>
+
+
+    <br>
+    <br>
+
+</body>
+</html>
