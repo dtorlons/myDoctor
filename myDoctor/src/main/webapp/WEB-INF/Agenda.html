@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Appuntamenti</title>
+<link rel="stylesheet" href="agenda.css">
+<script src="Agenda.js" charset="UFT-8" defer></script>
+</head>
+<body>
+
+    <body>    
+        <br>      
+        <form action="" style="border: solid black; padding: 5px; margin-left: 80%; border-radius: 8px;">
+            <b>Vai alla data:</b>
+            <input type="date" name="data">
+            <input type="submit" value="Vai">
+        </form>
+        <br>
+    
+        <table style="height: 580px;">      
+            <td>
+                <a th:href="@{/Agenda(data=${dataPrecedente})}"><img src="images/previous.png" style="width:50px; " alt=""></a>
+            </td>
+    
+
+            <td th:each="giorno : ${giorni}"  style="border: darkgrey solid;border-radius: 5px; width:310px; position: relative; vertical-align: top; background: #BFBFBF;border-radius:5px;">
+                <div th:text="${giorno.formattedDay}"  class="calendarDay"></div>
+                <br>
+                <div th:if="${#lists.isEmpty(giorno.timebands)}"> <br> <span style="font-size: 12px;">Nessuna fascia oraria inserita per questo giorno</span></div>
+
+                <div th:each="disp : ${giorno.timebands}" class="timeband">
+                    <p style="font-size: smaller; font-weight: bold;">
+                            Fascia oraria: <br> 
+                            <b style="font-weight: bolder;" th:text="${disp.timeband}"></b>
+
+                            <div th:each="freeApp : ${disp.freeAppointments}" th:idDisponibilita="${freeApp.disponibilitàId}" th:date="${freeApp.date}" th:start="${freeApp.formattedStartTime}" th:end="${freeApp.formattedEndTime}">
+                                <p class="freeAppointment">
+                                    <span th:text="${freeApp.formattedTimeband}"></span>
+                                </p>                                
+                            </div>
+
+                    </p>
+                </div>
+
+
+            </td>
+    
+
+            <td>
+                <a th:href="@{/Agenda(data=${dataSuccessiva})}"> <img src="images/next.png" style="width:50px;" alt=""></a>
+            </td>
+        </table>
+        <br>    
+        
+
+        <div class="modal" id="insertAppointment">
+            <span class="close" onclick="closeModal(event);" style="cursor: pointer;">&times;&nbsp;</span>
+    
+            <form method="post" action="PickAppointment" style="border: solid black; margin: auto; width: 50%; padding: 20px; margin-top: 10%; border-radius: 10px; background: darkgrey;">
+                <p><b>Prendi un appuntamento:</b></p>
+                <input type="hidden" name="disponibilitaId" id="disponibilitaId" readonly required>
+                Data: <input type="date" name="date" id="date" readonly required>
+                <br>
+                Inizio: <input type="time" name="inizio" id="inizio" required>
+                Fine: <input type="time" name="fine" id="fine" required>
+                Note: <input type="text" name="note" id="note">
+                <br>
+                <input type="submit" value="Prendi appuntamento">
+            </form>
+    
+        </div>
+
+</body>
+</html>

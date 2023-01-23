@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-
 import exceptions.DBException;
 import exceptions.InsertionException;
 import exceptions.UpdateException;
@@ -289,6 +288,55 @@ public class AppointmentDAO implements DAO<Appointment, Timeband>{
 		}
 		
 		return;
+		
+	}
+	
+	public List<Appointment> getAllFree(Timeband timeband) throws DBException{
+		
+		//Prepare the query
+		String query = "call TabellaAppuntamentiLiberi(?, ?, ?, ?, ?)";
+		
+		
+		// Set all the query values
+		PreparedStatement ps = null;		
+		try {
+			ps = connection.prepareStatement(query);
+			ps.setInt(1, timeband.getId());
+			ps.setDate(2, java.sql.Date.valueOf(timeband.getInizio().toLocalDate()));
+			ps.setTime(3, java.sql.Time.valueOf(timeband.getInizio().toLocalTime()));
+			ps.setTime(4, java.sql.Time.valueOf(timeband.getFine().toLocalTime()));
+			ps.setInt(5, timeband.getStandardAppointmentLength());
+		} catch (SQLException e1) {
+			throw new DBException(e1);
+		}
+		
+		//Launch the query, obtain results, close resources
+		ResultSet result=null;
+		List<Appointment> freeAppointments = new ArrayList<>();
+		try {
+			result = ps.executeQuery();
+			while(result.next()) {						
+				freeAppointments.add(new Appointment(	result.getInt("idDisponibilita"),
+														result.getTimestamp("inizio").toLocalDateTime(), 
+														result.getTimestamp("fine").toLocalDateTime(),
+														result.getString("note")));
+			}			
+		} catch (SQLException e) {
+			throw new DBException(e);
+		}finally {
+			try {
+				result.close();
+				ps.close();
+			} catch (SQLException e) {
+				System.err.println(e.getMessage()+"\n"+e.getLocalizedMessage());
+			}
+		}
+		
+		/*
+		 * Return the list of Free Appointments
+		 */
+		
+		return freeAppointments;
 		
 	}
 

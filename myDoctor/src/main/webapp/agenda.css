@@ -108,3 +108,16 @@
     background-color: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(10px);
   }
+
+  .freeAppointment{
+    border: solid gray;
+    background: gray;
+    color: white;
+    border-radius: 5px;
+  }
+
+  .freeAppointment:hover{
+    border: solid black;   
+    color: lightyellow;
+    cursor: pointer;
+  }

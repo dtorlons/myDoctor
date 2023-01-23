@@ -52,6 +52,19 @@ public class Appointment {
 		this.paziente = new PatientObserver(paziente); //TODO: Rivedi questa cosa del polimorfismo 
 		this.note = note;		
 	}
+	/**
+	 * TODO: Fare questo costruttore
+	 * @param disponibilitàId
+	 * @param inizio
+	 * @param fine
+	 * @param note
+	 */
+	public Appointment(int disponibilitàId, LocalDateTime inizio, LocalDateTime fine, String note) {				
+		this.disponibilitàId = disponibilitàId;
+		this.inizio = inizio;
+		this.fine = fine;		
+		this.note = note;		
+	}
 	
 	/*
 	 * Getters & Setters
@@ -105,6 +118,13 @@ public class Appointment {
 	public void setFine(LocalDateTime fine) {
 		this.fine = fine;
 	}
+
+	@Override
+	public String toString() {
+		return "Appointment [id=" + id + ", disponibilitàId=" + disponibilitàId + ", inizio=" + inizio + ", fine="
+				+ fine + ", paziente=" + paziente + ", note=" + note + "]";
+	}
+	
 
 	
 

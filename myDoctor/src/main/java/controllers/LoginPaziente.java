@@ -2,7 +2,6 @@ package controllers;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,44 +9,55 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import DAO.PatientDAO;
+import DAO.DoctorDAO;
+import DAO.PatientDetailsDAO;
 import beans.Doctor;
 import beans.Patient;
 import exceptions.DBException;
 import utils.ConnectionHandler;
 
-@WebServlet("/LoginMedico")
-public class LoginMedico extends HttpServlet {
-	private static final long serialVersionUID = 1L;       
-    
+/**
+ * Servlet implementation class LoginPaziente
+ */
+@WebServlet("/LoginPaziente")
+public class LoginPaziente extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 	 private Connection connection;
 	    
 	    public void init(){
 			connection = new ConnectionHandler(getServletContext()).getConnection();		
 		}
+    
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+
 		request.getSession().invalidate();
 		
-		Doctor medico = new Doctor(1, "Diego", "banana");
+		Patient patient = null;
 		
-		List<Patient> pazienti;
 		try {
-			pazienti = new PatientDAO(connection).getAll(medico);
+			patient = new Patient(1, "mario", 1, "banana", new PatientDetailsDAO(connection).get(1));
 		} catch (DBException e) {
-			response.sendError(500, "Errore database");
-			return;
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-				
-		request.getSession().setAttribute("medico", medico);
-		request.getSession().setAttribute("pazienti", pazienti);  
-						
 		
-		return;		
+		Doctor doctor = null;
+		try {
+			 doctor = new DoctorDAO(connection).get(patient.getIdMedico());
+		} catch (DBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		request.getSession().setAttribute("medico", doctor);
+		request.getSession().setAttribute("patient", patient); 
+		
+		
+		
+		
 	}
 
-	
 	
 
 }

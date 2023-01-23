@@ -4,8 +4,8 @@ public class Patient implements User{
 
 	private int id;
 	private String username;
-	private int idMedico;
 	private String password;
+	private int idMedico;	
 	private PatientDetails patientDetails;
 	
 	public Patient(int id, String username, int idMedico, String password, PatientDetails patientDetails) {

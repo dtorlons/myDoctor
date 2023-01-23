@@ -6,5 +6,7 @@ package beans;
  *
  */
 public interface User {
+	public static final String username = "";
+	public static final String password = "";
 
 }

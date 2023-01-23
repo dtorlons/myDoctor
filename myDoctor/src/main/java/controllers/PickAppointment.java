@@ -1,4 +1,4 @@
- package controllers;
+package controllers;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import DAO.AppointmentDAO;
-
-import DAO.PatientDAO;
 import DAO.TimebandDAO;
 import beans.Doctor;
 import beans.Patient;
@@ -24,88 +22,67 @@ import schedule.entities.Appointment;
 import schedule.entities.Timeband;
 import utils.ConnectionHandler;
 
-/**
- * Servlet implementation class MakeAppointment
- */
-@WebServlet("/MakeAppointment")
-public class MakeAppointment extends HttpServlet {
+@WebServlet("/PickAppointment")
+public class PickAppointment extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
-	
-	public void init (){
-		connection = new ConnectionHandler(getServletContext()).getConnection();			
+
+	public void init() {
+		connection = new ConnectionHandler(getServletContext()).getConnection();
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
 		Doctor medico = (Doctor) request.getSession().getAttribute("medico");
-		
-		
-		
+		Patient patient = (Patient) request.getSession().getAttribute("patient");
+
 		Integer disponibilitaId;
 		LocalDate date;
 		LocalDateTime inizio;
-		LocalDateTime fine;
-		Integer idPaziente;
-		String note; 
+		LocalDateTime fine;		
+		String note;
 
 		try {
 			disponibilitaId = Integer.parseInt(request.getParameter("disponibilitaId"));
 			date = LocalDate.parse(request.getParameter("date"));
 			inizio = LocalDateTime.of(date, LocalTime.parse(request.getParameter("inizio")));
-			fine = LocalDateTime.of(date, LocalTime.parse(request.getParameter("fine")));
-			idPaziente = Integer.parseInt(request.getParameter("idPaziente"));
+			fine = LocalDateTime.of(date, LocalTime.parse(request.getParameter("fine")));			
 			note = "" + request.getParameter("note");
-		}catch(Exception e) {
+		} catch (Exception e) {
 			response.getWriter().println("Errore nei parametri in ingresso");
 			e.printStackTrace();
 			return;
-		}			
-	
-		
-		
-		Patient paziente;
-		try {
-			paziente = new PatientDAO(connection).get(idPaziente);
-		} catch (DBException e2) {
-			response.sendError(500, "Errore database");
-			return;
 		}
-		
-		Appointment appointment = new Appointment(disponibilitaId, inizio, fine, paziente, note);
+
+		Appointment appointment = new Appointment(disponibilitaId, inizio, fine, patient, note);
+
 		Timeband timeband = null;
-		
-		
+
 		try {
 			timeband = new TimebandDAO(connection).get(disponibilitaId);
 		} catch (DBException e1) {
 			response.sendError(500, "Errore nel database");
-			return;			
-		}	
-		
-		if(timeband.getMedico().getId() != medico.getId()) {
+			return;
+		}
+
+		if (timeband.getMedico().getId() != medico.getId()) {
 			response.sendError(403, "Non hai privilegi per effettuare questa operazione");
 			return;
 		}
-		
-		
-		if(!appointment.getInizio().toLocalDate().equals(appointment.getFine().toLocalDate())) {
+
+		if (!appointment.getInizio().toLocalDate().equals(appointment.getFine().toLocalDate())) {
 			response.getWriter().println("L'appuntamento deve essere nella stessa data");
 			return;
 		}
-		
-		if(appointment.getInizio().isBefore(LocalDateTime.now())) {
+
+		if (appointment.getInizio().isBefore(LocalDateTime.now())) {
 			response.getWriter().println("Non si può inserire un appuntamento prima di adesso");
 			return;
-		} 
-		
-		
-		
-		
-		//Inserimento appuntamento 
+		}
+			
+
+		// Inserimento appuntamento
 		try {
 			new AppointmentDAO(connection).insert(appointment, timeband);
 		} catch (DBException e) {
@@ -116,10 +93,8 @@ public class MakeAppointment extends HttpServlet {
 			return;
 		}
 		
-		String data = inizio.toLocalDate().toString(); 
-		String path = this.getServletContext().getContextPath() + "/GestioneAgenda?data="+data;;
-		response.sendRedirect(path); 
-		
+		String path = this.getServletContext().getContextPath() + "/Agenda";
+		response.sendRedirect(path);		
 		return;
 		
 	}

@@ -21,6 +21,7 @@ public class Timeband {
 	private DoctorObserver medico;	
 	private int standardAppointmentLength;
 	private List<Appointment> appuntamenti;
+	private List<Appointment> freeAppointments;
 	
 	/**
 	 * <p>Constuctor for the timeband. </p>
@@ -119,6 +120,18 @@ public class Timeband {
 		this.appuntamenti = appuntamenti;
 	}
 	
+	public void setFreeAppointments(List<Appointment> freeAppointments) {
+		this.freeAppointments = freeAppointments;
+	}
 	
+	public List<Appointment> getFreeAppointments(){
+		return this.freeAppointments;
+	}
+	
+	@Override
+	public String toString() {
+		return "Timeband [id=" + id + ", inizio=" + inizio + ", fine=" + fine + ", medico=" + medico
+				+ ", standardAppointmentLength=" + standardAppointmentLength + "]";
+	}
 	
 }

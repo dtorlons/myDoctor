@@ -152,7 +152,9 @@ public class TimebandDAO implements DAO<Timeband, Doctor> {
 		//Fill up each timeband with its appointments		
 		for(Timeband timeband : timebands) {
 			timeband.setAppuntamenti(new AppointmentDAO(connection).getAll(timeband));
+			timeband.setFreeAppointments(new AppointmentDAO(connection).getAllFree(timeband));
 		}
+		
 		
 		return timebands;
 		
