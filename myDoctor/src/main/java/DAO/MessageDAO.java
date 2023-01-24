@@ -1,5 +1,6 @@
 package DAO;
 
+import java.sql.Connection;
 import java.util.List;
 
 import beans.Message;
@@ -9,6 +10,12 @@ import exceptions.InsertionException;
 import exceptions.UpdateException;
 
 public class MessageDAO implements DAO<Message, User>{
+	
+	private Connection connection;
+	
+	public MessageDAO(Connection connection) {
+		this.connection = connection;
+	}
 
 	/**
 	 * @deprecated
@@ -25,7 +32,7 @@ public class MessageDAO implements DAO<Message, User>{
 	}
 
 	@Override
-	public void insert(Message item1, User item2) throws DBException, InsertionException {
+	public void insert(Message item1, User item2) throws DBException {
 		
 		
 	}

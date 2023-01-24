@@ -6,8 +6,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import beans.Patient;
 import exceptions.DBException;
 import exceptions.InsertionException;
 import exceptions.UpdateException;
@@ -94,6 +97,45 @@ public class AppointmentDAO implements DAO<Appointment, Timeband>{
 		 * Returns an ArrayList
 		 */
 		return appuntamenti;
+	}
+	
+	
+	public List<Appointment> getAll(Patient patient) throws DBException{
+		
+		String query = "Select * from appuntamento where idPaziente = ? order by inizio desc";
+		
+		PreparedStatement ps = null;
+		
+		try {
+			ps = connection.prepareStatement(query);
+			ps.setInt(1, patient.getId());
+		} catch (SQLException e) {
+			throw new DBException(e);
+		}
+		
+		//int id, int disponibilitàId, LocalDateTime inizio, LocalDateTime fine, Patient paziente, String note) {
+		
+		ResultSet result = null;
+		List<Appointment> appointments = new ArrayList<>();
+		try {
+			result = ps.executeQuery();
+			while (result.next()) {
+				appointments.add(new Appointment(result.getInt("idAppuntamento"), result.getInt("idDisponibilita"),
+						result.getTimestamp("inizio").toLocalDateTime(), result.getTimestamp("fine").toLocalDateTime(),
+						new PatientDAO(connection).get(result.getInt("idPaziente")),
+						result.getString("note")));
+			}
+		} catch (SQLException e) {
+			throw new DBException(e);
+		}finally {
+			try {
+				result.close();
+				ps.close();
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());				
+			}
+		}
+		return appointments;		
 	}
 	
 	

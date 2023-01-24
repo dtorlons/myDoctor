@@ -32,8 +32,7 @@ public class Appointment {
 		this.disponibilitàId = disponibilitàId;
 		this.inizio = inizio;
 		this.fine = fine;
-		this.paziente = new PatientObserver(paziente);
-	
+		this.paziente = new PatientObserver(paziente);	
 	}
 	
 	/**
@@ -96,6 +95,10 @@ public class Appointment {
 	
 	public String getFormattedEndTime() {
 		return fine.toLocalTime().toString();
+	}
+	
+	public String getFormattedDate() {
+		return inizio.toLocalDate().format(DateTimeFormatter.ofPattern("E dd/MM/yy"));
 	}
 	
 	public String getDate() {

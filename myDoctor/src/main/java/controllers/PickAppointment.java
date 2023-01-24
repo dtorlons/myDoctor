@@ -70,7 +70,8 @@ public class PickAppointment extends HttpServlet {
 			response.sendError(403, "Non hai privilegi per effettuare questa operazione");
 			return;
 		}
-
+		
+		
 		if (!appointment.getInizio().toLocalDate().equals(appointment.getFine().toLocalDate())) {
 			response.getWriter().println("L'appuntamento deve essere nella stessa data");
 			return;

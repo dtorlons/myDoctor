@@ -22,7 +22,7 @@ public class DoctorObserver extends Doctor implements Observer{
 	
 	
 	public DoctorObserver(Doctor doctor) {
-		super(doctor.getId(), doctor.getUsername(), doctor.getPassword());		
+		super(doctor.getId(), doctor.getUsername(), doctor.getPassword(), doctor.getDoctorDetails());		
 	}
 	
 	//See interface Object or drag mouse over method prototype for info

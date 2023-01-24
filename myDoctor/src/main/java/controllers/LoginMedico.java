@@ -26,11 +26,23 @@ public class LoginMedico extends HttpServlet {
 			connection = new ConnectionHandler(getServletContext()).getConnection();		
 		}
 	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		
+		doGet(request, response);
+	}
+	    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		request.getSession().invalidate();
 		
-		Doctor medico = new Doctor(1, "Diego", "banana");
+		
+		
+		
+		
+		
+		
+		
+		Doctor medico = new Doctor(1, "Diego", "banana", null);
 		
 		List<Patient> pazienti;
 		try {
@@ -43,6 +55,7 @@ public class LoginMedico extends HttpServlet {
 		request.getSession().setAttribute("medico", medico);
 		request.getSession().setAttribute("pazienti", pazienti);  
 						
+		response.getWriter().print("OK");
 		
 		return;		
 	}

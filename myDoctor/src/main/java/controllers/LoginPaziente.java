@@ -49,7 +49,7 @@ public class LoginPaziente extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+				
 		request.getSession().setAttribute("medico", doctor);
 		request.getSession().setAttribute("patient", patient); 
 		

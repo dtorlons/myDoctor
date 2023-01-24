@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <body>    
+       <article th:if="${isEmpty}"> 
         <br>      
         <form action="" style="border: solid black; padding: 5px; margin-left: 80%; border-radius: 8px;">
             <b>Vai alla data:</b>
@@ -69,6 +69,28 @@
             </form>
     
         </div>
+
+    </article>
+
+    <article th:if="${!isEmpty}">       
+        <h2>I tuoi appuntamenti:</h2>
+        <p th:each="app : ${appuntamenti}" style="border: black solid; background: darkgrey; border-radius: 8px; padding: 10px; width: 25%;">
+            <b>Hai un appuntamento</b>
+            <b>&nbsp;</b> <b style="font-weight: bolder;" th:text="${app.formattedDate}"></b><br>
+            <b>Orario&nbsp;</b><b style="font-weight: bolder;" th:text="${app.FormattedTimeband}"></b><br>            
+            <b>Con:&nbsp;</b><b style="font-weight: bolder;" th:text="${dottore.doctorDetails.name}"></b><br>
+            <b style="font-weight: bolder;" th:text="${dottore.doctorDetails.address}"></b><br>
+            <b style="font-weight: bolder;" th:text="${dottore.doctorDetails.phone}"></b><br>
+
+            <b>Orario&nbsp;</b><b style="font-weight: bolder;" th:text="${app.id}"></b><br>
+
+            <a th:href="@{/CancelAppointment(appointmentId=${app.id})}">Cancella appuntamento</a>
+            
+            
+            
+        </p>
+
+    </article>
 
 </body>
 </html>

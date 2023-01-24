@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import DAO.AppointmentDAO;
-import beans.Doctor;
 import beans.Patient;
 import exceptions.DBException;
 import schedule.entities.Appointment;
@@ -28,10 +27,9 @@ public class CancelAppointment extends HttpServlet {
 		connection = new ConnectionHandler(getServletContext()).getConnection();
 	}
 	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		Patient self = (Patient)request.getSession().getAttribute("patient");
-		Doctor doctor = (Doctor)request.getSession().getAttribute("medico");
+		Patient self = (Patient)request.getSession().getAttribute("patient");		
 		
 		int appointmentId = Integer.parseInt(request.getParameter("appointmentId"));
 						

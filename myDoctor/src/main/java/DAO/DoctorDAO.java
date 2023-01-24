@@ -56,8 +56,10 @@ public class DoctorDAO implements DAO<Doctor, Patient> {
 		try {
 			result = ps.executeQuery();
 			while (result.next()) {
-				medico = new Doctor(result.getInt("idMedico"), result.getString("username"),
-						result.getString("password"));
+				medico = new Doctor(result.getInt("idMedico"), 
+									result.getString("username"),
+									result.getString("password"), 
+									new DoctorDetailsDAO(connection).get(idMedico));
 			}
 		} catch (SQLException e) {
 			throw new DBException(e);
@@ -73,6 +75,7 @@ public class DoctorDAO implements DAO<Doctor, Patient> {
 		/*
 		 * Return a Doctor
 		 */
+				
 		return medico;
 	}
 

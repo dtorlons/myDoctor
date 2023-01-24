@@ -19,9 +19,11 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import DAO.AppointmentDAO;
 import beans.Doctor;
 import beans.Patient;
 import exceptions.DBException;
+import schedule.entities.Appointment;
 import schedule.entities.Day;
 import utils.ConnectionHandler;
 
@@ -76,16 +78,28 @@ public class Agenda extends HttpServlet {
 			}	  
 		}	
 		
+		List<Appointment> appointments;
+		
+		try {
+			appointments = new AppointmentDAO(connection).getAll(patient);
+		} catch (DBException e) {
+			response.sendError(500,"Errore database");
+			return;
+		}
+		
 		
 		String path = "/WEB-INF/Agenda.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());		
 		ctx.setVariable("dataPrecedente", beginDate.with(DayOfWeek.MONDAY).minusDays(1).toString());  
 		ctx.setVariable("giorni", daysOfWeek);
+		ctx.setVariable("isEmpty", appointments.isEmpty());
+		ctx.setVariable("appuntamenti", appointments);
+		ctx.setVariable("dottore", doctor);
 		ctx.setVariable("dataSuccessiva", beginDate.with(DayOfWeek.SUNDAY).plusDays(1).toString());		
 		ctx.setVariable("paziente", patient);
 		templateEngine.process(path, ctx, response.getWriter());
-		return;		
+		return;	
 		
 	}
 
