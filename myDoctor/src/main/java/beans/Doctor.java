@@ -1,28 +1,23 @@
 package beans;
 
-public class Doctor implements User{
+public class Doctor extends User{
 	
-	private int id;
-	private String username;
-	private String password;
+	
 	private DoctorDetails doctorDetails;
 	
 	public Doctor(int id, String username, String password, DoctorDetails doctorDetails) {
-		super();
-		this.id = id;
-		this.username = username;
-		this.password = password;
+		super(id, username, password);		
 		this.doctorDetails = doctorDetails;
 	}
 
 	public int getId() {
 		return id;
 	}
-
+	@Override
 	public String getUsername() {
 		return username;
 	}
-
+	@Override
 	public String getPassword() {
 		return password;
 	}
@@ -30,11 +25,11 @@ public class Doctor implements User{
 	public void setId(int id) {
 		this.id = id;
 	}
-
+	@Override
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
+	@Override
 	public void setPassword(String password) {
 		this.password = password;
 	}

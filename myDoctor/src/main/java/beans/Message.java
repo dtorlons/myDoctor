@@ -3,7 +3,8 @@ package beans;
 import java.sql.Blob;
 import java.sql.Timestamp;
 
-public class Message {
+public class Message {	
+
 
 	private int messageId;
 	private User sender;
@@ -11,9 +12,11 @@ public class Message {
 	private Timestamp timestap;
 	private String message;
 	private Blob attachment;
+	private String filename;	
 	
 	
-	public Message(int messageId, User sender, User receiver, Timestamp timestap, String message, Blob attachment) {
+	public Message(int messageId, User sender, User receiver, Timestamp timestap, String message, Blob attachment,
+			String filename) {
 		super();
 		this.messageId = messageId;
 		this.sender = sender;
@@ -21,18 +24,20 @@ public class Message {
 		this.timestap = timestap;
 		this.message = message;
 		this.attachment = attachment;
+		this.filename = filename;		
 	}
 
 
-	public Message(User sender, User receiver, Timestamp timestap, String message, Blob attachment) {
+	public Message(User sender, User receiver, Timestamp timestap, String message, Blob attachment, String filename) {
 		super();
 		this.sender = sender;
 		this.receiver = receiver;
 		this.timestap = timestap;
 		this.message = message;
 		this.attachment = attachment;
+		this.filename = filename;
 	}
-
+	
 
 	public int getMessageId() {
 		return messageId;
@@ -64,6 +69,11 @@ public class Message {
 	}
 
 
+	public String getFilename() {
+		return filename;
+	}
+
+
 	public void setMessageId(int messageId) {
 		this.messageId = messageId;
 	}
@@ -92,15 +102,26 @@ public class Message {
 	public void setAttachment(Blob attachment) {
 		this.attachment = attachment;
 	}
-	
-	
-	
-	
-	
-	
-	
 
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
 	
+	private boolean isSender;
+	public void setSender(boolean isSender) {
+		this.isSender = isSender;
+	}	
 	
+	public boolean getSnd() {
+		return this.isSender;
+	}
+		
+	@Override
+	public String toString() {
+		return "Message [sender=" + sender + ", receiver=" + receiver + ", timestap=" + timestap + ", message="
+				+ message + ", attachment=" + attachment + ", filename=" + filename + "]\n";
+	}
+		
 	
 }

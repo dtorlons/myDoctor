@@ -75,7 +75,9 @@
             <br>
             Ora fine:<input type="time" name="fine" id="" required>
             <br>
-            Durata degli appuntamenti: <select name="minutes" id="standardLength"> <option th:each="min: ${minutes}" th:value="${min}" th:text="${min}"></option></select> minuti.
+            Durata degli appuntamenti: <select name="minutes" id="standardLength"> 
+                <option th:each="min: ${minutes}" th:value="${min}" th:text="${min}"></option>
+            </select> minuti.
             <br>
             <input type="submit" required>
         </form>

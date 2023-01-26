@@ -44,7 +44,7 @@ public class LoginPaziente extends HttpServlet {
 		
 		Doctor doctor = null;
 		try {
-			 doctor = new DoctorDAO(connection).get(patient.getIdMedico());
+			 doctor = new DoctorDAO(connection).get(patient.getIdMedico());			 
 		} catch (DBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -52,6 +52,12 @@ public class LoginPaziente extends HttpServlet {
 				
 		request.getSession().setAttribute("medico", doctor);
 		request.getSession().setAttribute("patient", patient); 
+		request.getSession().setAttribute("role", "patient");
+		
+		response.getWriter().println(request.getSession().getAttribute("patient"));
+		response.getWriter().println(request.getSession().getAttribute("medico"));
+		
+		return;
 		
 		
 		

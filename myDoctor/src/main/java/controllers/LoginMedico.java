@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import DAO.DoctorDAO;
 import DAO.PatientDAO;
 import beans.Doctor;
 import beans.Patient;
@@ -37,12 +38,18 @@ public class LoginMedico extends HttpServlet {
 		
 		
 		
+		Doctor medico = null;
+		try {
+			medico = new DoctorDAO(connection).get(1);
+		} catch (DBException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		
 		
 		
-		
-		Doctor medico = new Doctor(1, "Diego", "banana", null);
+		//Doctor medico = new Doctor(1, "Diego", "banana", null);
 		
 		List<Patient> pazienti;
 		try {
@@ -54,8 +61,10 @@ public class LoginMedico extends HttpServlet {
 				
 		request.getSession().setAttribute("medico", medico);
 		request.getSession().setAttribute("pazienti", pazienti);  
+		request.getSession().setAttribute("role", "doctor");
 						
-		response.getWriter().print("OK");
+		response.getWriter().print("OK: " + medico.getUsername());
+		
 		
 		return;		
 	}

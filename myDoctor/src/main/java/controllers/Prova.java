@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mysql.cj.jdbc.Blob;
+
 import DAO.MessageDAO;
 import beans.Doctor;
 import beans.Message;
@@ -42,17 +44,17 @@ public class Prova extends HttpServlet {
 		Timestamp t = null;
 		
 		
-		Message msx = new Message(patient, doctor, t, null, null);
+		//Message msx = new Message(patient, doctor, t, new String("text"), new Blob(null, null));
 		
 		
 		//insert patient message
 		
-		try {
-			new MessageDAO(null).insert(msx, msx.getReceiver());
-		} catch (DBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+//		try {
+//			new MessageDAO(null).insert(msx, msx.getReceiver());
+//		} catch (DBException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
 		
 		//retreive patient messages
 		
@@ -67,12 +69,12 @@ public class Prova extends HttpServlet {
 		
 		//insert doctor message
 		
-		try {
-			new MessageDAO(null).insert(msx, msx.getReceiver());
-		} catch (DBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			new MessageDAO(null).insert(msx, msx.getReceiver());
+//		} catch (DBException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		//retreive doctor messages relative to a patient
 		

@@ -45,7 +45,7 @@ public class DoctorDAO implements DAO<Doctor, Patient> {
 		// Set all the query values
 		try {
 			ps = connection.prepareStatement(query);
-			ps.setInt(1, idMedico);
+			ps.setInt(1, idMedico);			
 		} catch (SQLException e) {
 			throw new DBException(e);
 		}
