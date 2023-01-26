@@ -23,7 +23,7 @@ import beans.Doctor;
 import beans.Message;
 import beans.Patient;
 import exceptions.DBException;
-import utils.BlobUtils;
+import utils.Toolkit;
 import utils.ConnectionHandler;
 
 @WebServlet("/DoctorChat")
@@ -111,19 +111,22 @@ public class DoctorChat extends HttpServlet {
 
 		
 		
-		Patient patient = null;
+//		Patient patient = null;
+//
+//		for (Patient pat : patients) {
+//			if (pat.getId() == patientId) {
+//				patient = pat;
+//				break;
+//			}
+//		}
 
-		for (Patient pat : patients) {
-			if (pat.getId() == patientId) {
-				patient = pat;
-				break;
-			}
-		}
-
+		Patient patient = Toolkit.findPatientById(patients, patientId);
+		
+		
 		Message message = null;
 		try {
 			message = new Message(doctor, patient, java.sql.Timestamp.valueOf(LocalDateTime.now()), text,
-					BlobUtils.partToBlob(file), (file == null) ? null : file.getSubmittedFileName());
+					Toolkit.partToBlob(file), (file == null) ? null : file.getSubmittedFileName());
 
 		} catch (SerialException e1) {
 			response.sendError(500, "Unable to serialize file");

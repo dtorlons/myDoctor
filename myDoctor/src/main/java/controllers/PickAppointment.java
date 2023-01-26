@@ -94,8 +94,8 @@ public class PickAppointment extends HttpServlet {
 			return;
 		}
 		
-		String path = this.getServletContext().getContextPath() + "/Agenda";
-		response.sendRedirect(path);		
+		
+		response.sendRedirect("Home");		
 		return;
 		
 	}

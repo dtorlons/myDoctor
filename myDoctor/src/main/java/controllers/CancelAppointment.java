@@ -60,8 +60,8 @@ public class CancelAppointment extends HttpServlet {
 		}
 		
 		
-		String path = this.getServletContext().getContextPath() + "/Agenda";
-		response.sendRedirect(path);		
+		
+		response.sendRedirect("Home");		
 		return;
 		
 		

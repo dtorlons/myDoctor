@@ -363,6 +363,7 @@ public class AppointmentDAO implements DAO<Appointment, Timeband>{
 														result.getString("note")));
 			}			
 		} catch (SQLException e) {
+			e.printStackTrace();
 			throw new DBException(e);
 		}finally {
 			try {

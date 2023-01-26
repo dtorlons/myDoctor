@@ -2,6 +2,26 @@
     font-family: Arial, Helvetica, sans-serif;
   }
 
+  
+  .header {
+    overflow: hidden;
+    background: linear-gradient(349deg,#5BB7B1 0%, rgba(255, 255, 255, 0.1) 50%);
+    padding: 20px 10px;
+  }
+
+  .header a {
+    float: left;
+    color: black;
+    text-decoration: none;
+    border-radius: 4px;
+   }
+  
+.header-right {
+  	padding-right: 20px;
+    float: right;
+    color: #398ECC;
+  }
+
 .calendarDay{
     color: white;
     text-align: center;
@@ -121,3 +141,49 @@
     color: lightyellow;
     cursor: pointer;
   }
+
+
+  #chatInputField {
+    background-color: lightgrey;
+    border-radius: 10px;
+    padding: 10px;
+    width: 98%;
+    margin: 10px auto;
+    display: flex;
+    align-items: center;
+}
+
+#chatInputField form {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#chatInputField input[type='text'] {
+    flex: 1;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 16px;
+    outline: none;
+    margin-right: 10px;
+}
+
+#chatInputField input[type='file'] {
+    display: none;
+}
+
+#chatInputField input[type='submit'] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+#chatInputField input[type='submit']:hover {
+    background-color: #3e8e41;
+}

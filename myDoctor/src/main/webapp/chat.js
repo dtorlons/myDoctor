@@ -159,7 +159,7 @@ function render(messageArray){
         document.getElementById("chatWindow").append(msgdiv);
     }
     document.getElementById("chatWindow").scroll({top: document.getElementById("chatWindow").scrollHeight, behavior: "smooth"});
-    document.getElementById("chatWindow").scrollTop = document.getElementById("chatWindow").scrollHeight;
+   
 }
 
 

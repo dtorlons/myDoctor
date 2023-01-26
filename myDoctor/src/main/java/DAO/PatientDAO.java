@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,6 +84,45 @@ public class PatientDAO implements DAO<Patient, Doctor>{
 		return paziente;
 		
 		
+	}
+	
+	public Patient chechCredentials(String username, String password) throws DBException {
+		
+		String query = "select * from paziente where username = ? and password = ?";
+		
+		PreparedStatement ps = null;
+		
+		try {
+			ps = connection.prepareStatement(query);
+			ps.setString(1, username);
+			ps.setString(2, password);
+		} catch (SQLException e) {
+			throw new DBException(e);
+		}
+		
+		ResultSet result = null;
+		Patient patient = null;
+		try {
+			result = ps.executeQuery();
+			while(result.next()) {
+				patient = new Patient(result.getInt("idPaziente"), 
+						result.getString("username"), 
+						result.getInt("idMedico"), 
+						result.getString("password"),
+						new PatientDetailsDAO(connection).get(result.getInt("idPaziente")));
+			}
+		} catch (SQLException e) {
+			throw new DBException(e);
+		}finally {
+			try {
+				ps.close();
+				result.close();
+			} catch (SQLException e) {
+				throw new DBException(e);
+			}
+		}
+		
+		return patient;
 	}
 	
 	/**

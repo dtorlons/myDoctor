@@ -57,15 +57,18 @@ public class Chatroom extends HttpServlet {
 		if (role.equals("patient")) {
 
 			Patient patient = (Patient) request.getSession().getAttribute("patient");
+			Doctor doctor = (Doctor) request.getSession().getAttribute("medico");
 
 			String path = "/WEB-INF/Chat.html";
 			ServletContext servletContext = getServletContext();
 			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 			ctx.setVariable("paziente", patient);
+			ctx.setVariable("dottore", doctor);
 			templateEngine.process(path, ctx, response.getWriter());
 			return;
 
 		} // END ROLE PATIENT
+		
 		else if (role.equals("doctor")) {
 
 			Doctor doctor = (Doctor) request.getSession().getAttribute("medico");

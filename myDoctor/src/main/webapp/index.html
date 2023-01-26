@@ -2,13 +2,62 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>myDoctor.com</title>
+<link rel="icon" type="image/x-icon" href="images/heart.png">
+<link rel="stylesheet" href="agenda.css">
 </head>
+
 <body>
 
+    <header class="header">  <!--HEADER-->
+        <a> <img id="logo" src="images/logo.png" alt="Logo" style="height: 75px ;"></a> <!--Atention Point: mettere qui il link per la home -->
+        <div class="header-right">
+          <div class="login_form">
+                      
+            <div class="header-right">
+            <form method="post" action="CheckPatientCredentials" style="display: flex; justify-content: flex-end; font-size: 12px;">
+               
+               
+                Username: <input type="text" name="username" id="" style="width: 15%;">
+                
+                &nbsp;&nbsp; Password: <input type="password" name="password" id="" style="width: 15%;">
+                
+                &nbsp;&nbsp;<input type="submit" value="Login">
+            </form>
+            
+            <br>
+            
+            <button style="display: flex; justify-content: flex-end; float:right; font-size: 11px;" onclick="document.getElementById('doctorLoginForm').style.display ='block'; document.getElementById('docBtn').style.display ='none';" id="docBtn">Sei un dottore?</button>
 
-<form action="LoginMedico"></form>
+            <form method="post" id="doctorLoginForm" action="CheckDoctorCredentials" style="display: none; border: solid white; background-color: white; border-radius: 10px; padding: 10px;">
+                Username: <input type="text" name="username" id="">
+                Password: <input type="password" name="password" id="">
+                <input type="submit" value="Login">
+            </form>
+        </div>
+
+            
+           </div>
+        </div>
+      </header>
 
 
+
+
+
+
+    <article style="text-align: center;">
+        <img src="images/notizie.png" alt="" style=" width: -webkit-fill-available; margin: 3%;">
+
+    </article>
+
+    <footer style="padding: 20px; text-align: center; background: linear-gradient(0deg,#5BB7B1 0%, rgba(255, 255, 255, 0.1) 100%);">
+        <p><h3>Ingegneria del Software</h3></p>
+        <p>Diego Hernan Torlone - Matr. 936985</p>
+      </footer>
+      
 </body>
+
+
+
 </html>

@@ -4,14 +4,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
-
+import java.util.List;
 import javax.servlet.http.Part;
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
 
-public class BlobUtils {
-	
-	private static Archive archive;
+import beans.Patient;
+
+
+public class Toolkit {		
 	
 	public static Blob partToBlob(Part part) throws IOException, SerialException, SQLException {		
 		
@@ -23,15 +24,12 @@ public class BlobUtils {
 		return blob;		
 	}
 	
-	public static Archive getArchive(Blob blob, String filename) throws SQLException, IOException {
-				
-		if(archive == null) {
-			archive = new Archive(blob, filename);
-		}
-		
-		return archive;		
-		
+	
+	public static Patient findPatientById(List<Patient> patients, Integer id) {		
+		return patients.stream().filter(user -> user.getId()==id).findFirst().orElse(null);
 	}
+	
+	
 
 }
 

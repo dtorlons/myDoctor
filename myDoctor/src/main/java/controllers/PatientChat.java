@@ -24,7 +24,7 @@ import beans.Doctor;
 import beans.Message;
 import beans.Patient;
 import exceptions.DBException;
-import utils.BlobUtils;
+import utils.Toolkit;
 import utils.ConnectionHandler;
 
 /**
@@ -105,7 +105,7 @@ public class PatientChat extends HttpServlet {
 									doctor, 
 									java.sql.Timestamp.valueOf(LocalDateTime.now()), 
 									text, 
-									BlobUtils.partToBlob(file), 
+									Toolkit.partToBlob(file), 
 									(file == null)? null : file.getSubmittedFileName());
 			
 		} catch (SerialException e1) {

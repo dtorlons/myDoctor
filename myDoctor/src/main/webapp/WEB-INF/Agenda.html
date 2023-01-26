@@ -3,10 +3,27 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Appuntamenti</title>
+<link rel="icon" type="image/x-icon" href="images/heart.png">
 <link rel="stylesheet" href="agenda.css">
 <script src="Agenda.js" charset="UFT-8" defer></script>
 </head>
 <body>
+
+
+    <header class="header">  <!--HEADER-->
+        <a href="Home"> <img id="logo" src="images/logo.png" alt="Logo" style="height: 75px ;"></a> 
+        
+        <div class="header-right">
+          <div class="login_form">                      
+                <div class="header-right">
+                    <span th:text="${'Benvenuto ' + paziente.patientDetails.name}" style="font-weight: bold;">username</span>
+                    <span>notifiche</span>
+                    <span><button>Logout</button></span>
+                 </div>            
+           </div>
+        </div>
+    </header>
+
 
        <article th:if="${isEmpty}"> 
         <br>      
@@ -16,6 +33,7 @@
             <input type="submit" value="Vai">
         </form>
         <br>
+            <h3>Scegli l'orario del tuo appuntamento:</h3>
     
         <table style="height: 580px;">      
             <td>
@@ -91,6 +109,11 @@
         </p>
 
     </article>
+
+    <footer style="padding: 20px; text-align: center; background: linear-gradient(0deg,#5BB7B1 0%, rgba(255, 255, 255, 0.1) 100%);">
+        <p><h3>Ingegneria del Software</h3></p>
+        <p>Diego Hernan Torlone - Matr. 936985</p>
+      </footer>
 
 </body>
 </html>

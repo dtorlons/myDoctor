@@ -78,6 +78,49 @@ public class DoctorDAO implements DAO<Doctor, Patient> {
 				
 		return medico;
 	}
+	
+	
+	public Doctor checkCredentials(String username, String password) throws DBException {
+		
+		String query = "select * from medico where username = ? AND password = ?";
+		
+		PreparedStatement ps = null;
+		
+		try {
+			ps = connection.prepareStatement(query);
+			ps.setString(1, username);
+			ps.setString(2, password);
+		} catch (SQLException e) {
+			throw new DBException(e);
+		}
+		
+		ResultSet result = null;
+		Doctor doctor = null;
+		
+		try {
+			result = ps.executeQuery();
+			while(result.next()) {
+				doctor = new Doctor(result.getInt("idMedico"), 
+						result.getString("username"),
+						result.getString("password"), 
+						new DoctorDetailsDAO(connection).get(result.getInt("idMedico")));
+			}
+		} catch (SQLException e) {
+			throw new DBException(e);
+		}finally {
+			try {
+				ps.close();
+				result.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return doctor;	
+		
+	}
+	
 
 	/**
 	 * Not implemented 

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>My Doctor - Home</title>
+<link rel="icon" type="image/x-icon" href="images/heart.png">
+
+<style>
+  *{
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+.myDoctorDetails{
+    background: #5BB7B1;
+    border-radius: 9px;
+    padding: 10px;
+    display: flex;
+    color: white;
+}
+
+.chatlink{   
+    background: #40807c;
+    border:solid white;
+    margin-left: auto;
+    place-self: flex-end;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.chatlink:hover{
+    background: transparent;
+    border-color: #40807c;
+    cursor: pointer;
+}
+
+.header {
+    overflow: hidden;
+    background: linear-gradient(349deg,#5BB7B1 0%, rgba(255, 255, 255, 0.1) 50%);
+    padding: 20px 10px;
+  }
+
+  .header a {
+    float: left;
+    color: black;
+    text-decoration: none;
+    border-radius: 4px;
+   }
+  
+.header-right {
+  	padding-right: 20px;
+    float: right;
+    color: #398ECC;
+  }
+
+
+</style>
+
+</head>
+
+<body style="display: flex; flex-direction: column;">
+
+    <header class="header">  <!--HEADER-->
+        <a href="#Home"> <img id="logo" src="images/logo.png" alt="Logo" style="height: 75px ;"></a> <!--Atention Point: mettere qui il link per la home -->
+        
+        <div class="header-right">
+          <div class="login_form">                      
+                <div class="header-right">
+                    <span th:text="${'Benvenuto ' + paziente.patientDetails.name}" style="font-weight: bold;">username</span>
+                    <span>notifiche</span>
+                    <span><button>Logout</button></span>
+                 </div>            
+           </div>
+        </div>
+    </header>
+
+      <br>
+      <br>
+
+<article style=" width: 95%; margin: auto;">
+        
+    <div class="detailbox" style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 15px;">
+        <div class="myDoctorDetails">
+            <div>
+                <h3>Il tuo dottore:</h3>
+                <p th:text="${dottore.doctorDetails.name}"></p>
+                <p th:text="${dottore.doctorDetails.address}"></p>
+                <p th:text="${dottore.doctorDetails.phone}"></p>   
+            </div>         
+            <div class="chatlink" onclick="window.location.href = 'Chatroom'">
+                <span>Apri la chat</span>
+            </div>
+        </div>
+        <div class="patientDetails" style="background: #5BB7B1; border-radius: 8px; padding: 15px; color: white;">       
+            <h3>I tuoi dettagli:</h3>
+            <p th:text="${paziente.patientDetails.name}"></p>
+            <p th:text="${paziente.patientDetails.address}"></p>
+            <p th:text="${paziente.patientDetails.phone}"></p>
+        </div>    
+    </div>
+    
+
+    <br>
+
+    <div class="agendaInteraction" style=" background: #5BB7B1; padding: 15px; border-radius: 8px;">
+
+        <h3 style="margin-left: 15px; color: white;">I tuoi appuntamenti:</h3>
+
+        <div th:if="${#lists.isEmpty(appuntamenti)}" style="margin-left: 15px;"> 
+            <p>&nbsp;</p>            
+            <p> <b style="color: beige;">Non hai appuntamenti, vai sull'agenda per prendere un appuntamento</b></p>
+            <p>
+                <div class="chatlink" onclick="window.location.href = 'Agenda'" style="text-align: center; margin-right: 15px; color:white;">
+                    <span>Agenda</span>
+                </div>
+            </p>
+        </div>
+        <br>
+
+        <p th:each="app : ${appuntamenti}" style="border: black solid; background: darkgrey; border-radius: 8px; padding: 10px; width: 25%; margin-left: 15px;">
+            
+            <b></b> <b style="font-weight: bolder; text-transform: capitalize;" th:text="${app.formattedDate}"></b><br>
+            <b>Orario&nbsp;</b><b style="font-weight: bolder;" th:text="${app.FormattedTimeband}"></b><br>            
+            <b>Con:&nbsp;</b><b style="font-weight: bolder;" th:text="${dottore.doctorDetails.name}"></b><br>
+            <b style="font-weight: bolder;" th:text="${dottore.doctorDetails.address}"></b><br>
+            <b style="font-weight: bolder;" th:text="${dottore.doctorDetails.phone}"></b><br>
+            
+            <a th:href="@{/CancelAppointment(appointmentId=${app.id})}">Cancella appuntamento</a>  <!--RIVEDI L'EVENTO-->
+           
+                   
+            <br>
+            
+            
+        </p>
+
+    </div>
+
+<br>
+<br>
+
+
+
+
+
+      </article>
+
+
+      <footer style="padding: 20px; text-align: center; background: linear-gradient(0deg,#5BB7B1 0%, rgba(255, 255, 255, 0.1) 100%);">
+        <p><h3>Ingegneria del Software</h3></p>
+        <p>Diego Hernan Torlone - Matr. 936985</p>
+      </footer>
+
+</body>
+</html>
