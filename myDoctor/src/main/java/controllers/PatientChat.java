@@ -17,9 +17,9 @@ import javax.sql.rowset.serial.SerialException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import DAO.DoctorDAO;
+
 import DAO.MessageDAO;
-import DAO.PatientDetailsDAO;
+
 import beans.Doctor;
 import beans.Message;
 import beans.Patient;
@@ -44,12 +44,18 @@ public class PatientChat extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 				
 				
+		if(!"patient".equalsIgnoreCase((String)request.getSession().getAttribute("role"))) {
+			response.getWriter().print("Ruolo paziente non rispettato");
+			return;
+		}
+		
+		
 		Doctor doctor = (Doctor) request.getSession().getAttribute("medico");
 		Patient patient = (Patient)request.getSession().getAttribute("patient");
 		
 		List<Message> messages;
 		try {
-			messages = new MessageDAO(connection).getAll(doctor);
+			messages = new MessageDAO(connection).getAll(patient);
 		} catch (DBException e) {
 			response.sendError(500, "Errore database");
 			return;

@@ -55,6 +55,8 @@ public class Chatroom extends HttpServlet {
 		 */
 
 		if (role.equals("patient")) {
+			
+			System.out.println("RICHESTA CHAT PAZIENTE");
 
 			Patient patient = (Patient) request.getSession().getAttribute("patient");
 			Doctor doctor = (Doctor) request.getSession().getAttribute("medico");
@@ -70,7 +72,9 @@ public class Chatroom extends HttpServlet {
 		} // END ROLE PATIENT
 		
 		else if (role.equals("doctor")) {
-
+			
+			
+			
 			Doctor doctor = (Doctor) request.getSession().getAttribute("medico");
 			List<Patient> patients = (List<Patient>) request.getSession().getAttribute("pazienti");
 

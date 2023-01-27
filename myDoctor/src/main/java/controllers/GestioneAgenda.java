@@ -82,6 +82,7 @@ public class GestioneAgenda extends HttpServlet {
 		String path = "/WEB-INF/GestioneAgenda.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());		
+		ctx.setVariable("dottore", medico);
 		ctx.setVariable("dataPrecedente", beginDate.with(DayOfWeek.MONDAY).minusDays(1).toString());  
 		ctx.setVariable("giorni", giorni);
 		ctx.setVariable("dataSuccessiva", beginDate.with(DayOfWeek.SUNDAY).plusDays(1).toString());

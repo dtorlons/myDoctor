@@ -1,8 +1,8 @@
 package controllers;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -125,7 +125,7 @@ public class DoctorChat extends HttpServlet {
 		
 		Message message = null;
 		try {
-			message = new Message(doctor, patient, java.sql.Timestamp.valueOf(LocalDateTime.now()), text,
+			message = new Message(doctor, patient, Timestamp.valueOf(LocalDateTime.now()), text,
 					Toolkit.partToBlob(file), (file == null) ? null : file.getSubmittedFileName());
 
 		} catch (SerialException e1) {
@@ -142,7 +142,8 @@ public class DoctorChat extends HttpServlet {
 		try {
 			new MessageDAO(connection).insert(message, patient);
 		} catch (DBException e) {
-			response.sendError(500, "Errore database");
+			response.setStatus(500);
+			response.getWriter().println(e.getMessage());			
 			return;
 		}
 		

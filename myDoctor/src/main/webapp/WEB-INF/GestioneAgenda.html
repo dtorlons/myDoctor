@@ -6,11 +6,52 @@
 <link rel="icon" type="image/x-icon" href="images/heart.png">
 <link rel="stylesheet" href="agenda.css">
 <script src="gestioneAgenda.js" charset="UFT-8" defer></script>
+<style>
+    
+  .header {
+      overflow: hidden;
+      background: linear-gradient(349deg,#5BB7B1 0%, rgba(255, 255, 255, 0.1) 50%);
+      padding: 20px 10px;
+    }
+  
+    .header a {
+      float: left;
+      color: black;
+      text-decoration: none;
+      border-radius: 4px;
+     }
+    
+  .header-right {
+        padding-right: 20px;
+      float: right;
+      color: #398ECC;
+    }  
+</style>
 
 
 
 </head>
 <body>    
+
+    <header class="header">  <!--HEADER-->
+        <a href="Home"> <img id="logo" src="images/logo.png" alt="Logo" style="height: 75px ;"></a> <!--Atention Point: mettere qui il link per la home -->
+        
+        <div class="header-right">
+          <div class="login_form">                      
+                <div class="header-right">
+                    <span th:text="${'Benvenuto ' + dottore.doctorDetails.name}" style="font-weight: bold;">username</span>
+                    <span>notifiche</span>
+                    <span><button>Logout</button></span>
+                 </div>            
+           </div>
+        </div>
+    </header>
+
+
+
+
+
+
     <br>      
     <form action="" style="border: solid black; padding: 5px; margin-left: 80%; border-radius: 8px;">
         <b>Vai alla data:</b>
@@ -172,7 +213,10 @@
 
 
     <br>
-    <br>
+    <footer style="padding: 20px; text-align: center; background: linear-gradient(0deg,#5BB7B1 0%, rgba(255, 255, 255, 0.1) 100%);">
+        <p><h3>Ingegneria del Software</h3></p>
+        <p>Diego Hernan Torlone - Matr. 936985</p>
+      </footer>
 
 </body>
 </html>

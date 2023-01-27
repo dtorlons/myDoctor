@@ -72,7 +72,7 @@ public class CheckDoctorCredentials extends HttpServlet {
 		request.getSession().setAttribute("pazienti", patients);  
 		request.getSession().setAttribute("role", "doctor"); // Questa cosa mi serve solo per una servlet....pensaci (request.setattribute?)
 		
-		//REDIRECT TO HOME PAGE
+		response.sendRedirect("Home");
 		
 		return;
 		

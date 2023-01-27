@@ -17,7 +17,8 @@
         <div class="header-right">
           <div class="login_form">                      
                 <div class="header-right">
-                    <span th:text="${'Benvenuto ' + paziente.patientDetails.name}" style="font-weight: bold;">username</span>
+                    <span th:if="${paziente != null}" th:text="${'Benvenuto ' + paziente.patientDetails.name}" style="font-weight: bold;">username</span>
+                    <span th:if="${paziente == null}" th:text="${'Benvenuto ' + dottore.doctorDetails.name}" style="font-weight: bold;">username</span>
                     <span>notifiche</span>
                     <span><button>Logout</button></span>
                  </div>            
@@ -27,15 +28,14 @@
 
 
     <br>
-    <h3 th:text="${'La tua conversazione con ' + dottore.doctorDetails.name}"></h3>
+    <h3 th:if="${paziente != null}" th:text="${'La tua conversazione con ' + dottore.doctorDetails.name}"></h3>
     <br>
     
-    <div  th:if="${pazienti != null}">
-        <select name="patientId" id="patientSelector" required onchange="selectChatter(event);">
+    <div  th:if="${paziente == null}" >
+        <select name="patientId" id="patientSelector" required onchange="selectChatter(event);" style="    width: -webkit-fill-available; font-size: large; background-color: darkgrey; color: white; border-radius: 8px;">
             <option value="">Seleziona un paziente...</option>
             <option th:each="paziente : ${pazienti}" th:value="${paziente.id}" th:text="${paziente.patientDetails.name}"></option>
         </select>
-
     </div>
 
 

@@ -3,6 +3,7 @@ package controllers;
 import java.io.IOException;
 import java.sql.Connection;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -22,6 +23,7 @@ import beans.Doctor;
 import beans.Patient;
 import exceptions.DBException;
 import schedule.entities.Appointment;
+import schedule.entities.Day;
 import utils.ConnectionHandler;
 
 /**
@@ -45,6 +47,11 @@ public class Home extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		
+		String role = (String) request.getSession().getAttribute("role");
+		
+		if (role.equals("patient")) {
 
 		Doctor medico = (Doctor) request.getSession().getAttribute("medico");
 		Patient patient = (Patient) request.getSession().getAttribute("patient");
@@ -71,6 +78,43 @@ public class Home extends HttpServlet {
 		ctx.setVariable("dottore", medico);
 		templateEngine.process(path, ctx, response.getWriter());
 		return;	
+		
+		} //END OF ROLE PATIENT
+		
+		else if (role.equals("doctor")) {
+			
+		
+		Doctor doctor = (Doctor) request.getSession().getAttribute("medico");
+		List<Patient> patients  = (List<Patient>) request.getSession().getAttribute("pazienti"); 
+				
+		Day today;
+		try {
+			today = new Day(LocalDate.now(), doctor, connection);
+		} catch (DBException e) {
+			response.sendError(500, "Errore database");
+			return;
+		}
+		
+		
+								
+		String path = "/WEB-INF/Home_doctor";
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		
+		ctx.setVariable("oggi", today);
+		ctx.setVariable("pazienti", patients);
+		ctx.setVariable("dottore", doctor);
+		templateEngine.process(path, ctx, response.getWriter());
+		return;	
+			
+		}
+		
+		else {
+			response.sendError(403, "No role, not allowed");
+			return;
+		}
+		
+		
 		
 		
 		

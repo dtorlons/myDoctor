@@ -58,9 +58,7 @@ public class CancelAppointment extends HttpServlet {
 			response.sendError(500, "Errore database");
 			return;
 		}
-		
-		
-		
+				
 		response.sendRedirect("Home");		
 		return;
 		

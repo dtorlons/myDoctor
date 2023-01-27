@@ -170,7 +170,7 @@
 }
 
 #chatInputField input[type='file'] {
-    display: none;
+    display: block;
 }
 
 #chatInputField input[type='submit'] {

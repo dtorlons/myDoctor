@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>My Doctor - Home</title>
+<link rel="icon" type="image/x-icon" href="images/heart.png">
+
+<style>
+    *{
+      font-family: Arial, Helvetica, sans-serif;
+    }  
+  
+  .chatButton{   
+      background: #40807c;
+      border:solid white;
+      margin-left: auto;
+      place-self: flex-end;
+      padding: 20px;
+      border-radius: 8px;
+  }
+  
+  .chatButton:hover{
+      background: transparent;
+      border-color: #40807c;
+      cursor: pointer;
+  }
+  
+  .header {
+      overflow: hidden;
+      background: linear-gradient(349deg,#5BB7B1 0%, rgba(255, 255, 255, 0.1) 50%);
+      padding: 20px 10px;
+    }
+  
+    .header a {
+      float: left;
+      color: black;
+      text-decoration: none;
+      border-radius: 4px;
+     }
+    
+  .header-right {
+        padding-right: 20px;
+      float: right;
+      color: #398ECC;
+    }  
+
+    .container {
+          display: flex;
+        }
+        
+        .todaySchedule, .patientInteraction {
+          flex: 1;
+        }
+
+    .todaySchedule{
+    background: #5BB7B1;
+    border-radius: 8px;
+    padding: 15px;
+    color: white;
+    }
+
+    .patientInteraction{
+    padding: 15px;
+    background: #5BB7B1;
+    border-radius: 8px;
+    margin-left: 15px;
+    color: white;
+    }
+
+  </style>
+
+<body>    
+
+    <header class="header">  <!--HEADER-->
+        <a href="#Home"> <img id="logo" src="images/logo.png" alt="Logo" style="height: 75px ;"></a> <!--Atention Point: mettere qui il link per la home -->
+        
+        <div class="header-right">
+          <div class="login_form">                      
+                <div class="header-right">
+                    <span th:text="${'Benvenuto ' + dottore.doctorDetails.name}" style="font-weight: bold;">username</span>
+                    <span>notifiche</span>
+                    <span><button>Logout</button></span>
+                 </div>            
+           </div>
+        </div>
+    </header>
+
+      <br>
+      <br>
+
+
+       <article style="min-height: 450px;">
+
+         
+        <div class="container">
+            
+            <div class="todaySchedule">
+                
+                <h3>Appuntamenti: </h3>
+
+          <div>                 
+              <div class="chatButton" onclick="window.location.href ='GestioneAgenda'; ">
+                   Apri Gestione Agenda
+              </div> 
+          </div>
+  
+          <div>
+            <h3>Appuntamenti di oggi</h3>
+        </div>
+         
+          
+              <div th:each="timeband : ${oggi.timebands}" style="border: solid #40807c;  border-radius: 8px;  padding: 10px; margin-top: 15px;">
+                  <div th:text="${'Fascia oraria ' + timeband.data}" style="background: #40805c; padding: 5px; border-radius: 5px;"></div>
+                  <br>
+                  <span th:if="${#lists.isEmpty(timeband.appuntamenti)}">Nessun appuntamento</span>
+  
+                  <div th:each="appointment : ${timeband.appuntamenti}" style="border-radius: 8px;  padding: 10px;  width: 80%; background: #406480;">
+  
+                      <span th:text="${appointment.formattedTimeband}"></span><br>
+                      <span th:text="${appointment.paziente.patientDetails.name}"></span>
+                      <span th:text="${appointment.note}"></span>
+                      
+                  </div>
+  
+              </div>
+  
+            </div>
+          
+            <div class="patientInteraction">            
+              
+          
+                <h3>Assistiti:</h3>
+                      
+              <div>
+                  <div  th:if="${pazienti != null}" style="display: flex;">
+                      <select name="patientId" id="patientSelector" style=" width: 35%;" onchange="setDetails();">
+                          <option value="">Seleziona un paziente...</option>
+                          <option th:each="paziente : ${pazienti}" th:value="${paziente.id}" th:text="${paziente.patientDetails.name}"></option>
+                      </select>
+                      
+                      <div class="chatButton" onclick="window.location.href = 'Chatroom'" >Avvia chat</div>
+                  </div>
+              
+              </div>
+  
+              
+          
+  
+           <div hidden th:if="${pazienti != null}" >
+               <li class="patData" th:each="paziente : ${pazienti}" th:patientId="${paziente.id}" th:name="${paziente.patientDetails.name}" th:address="${paziente.patientDetails.address}" th:phone="${paziente.patientDetails.phone}"></li>
+           </div>
+  
+           <br>
+           <div id="detailsContainer">Seleziona un paziente per vedere i dettagli</div>
+         </div>
+       </div>
+
+       <script>
+         function setDetails(){
+          
+         let datas = document.getElementsByClassName("patData");
+         let detailsContainer = document.getElementById("detailsContainer");
+
+         let idValue = document.getElementById("patientSelector").value;
+
+         let nameP = document.createElement("p");
+         let addressP = document.createElement("p");
+         let phoneP = document.createElement("p");
+
+         let dataArray = Array.from(datas);
+         
+         if(idValue == ''){
+           document.getElementById("detailsContainer").innerHTML = 'Seleziona un paziente per vedere i dettagli';
+         }else{              
+           //fetch the tuple
+           let tuple;
+           for(let i = 0; i<dataArray.length; i++){
+             if(dataArray[i].getAttribute('patientid')== idValue){
+               tuple = dataArray[i];
+               break;
+             }
+           }
+
+           //render the tuple
+           document.getElementById("detailsContainer").innerHTML = '';
+           nameP.innerHTML = tuple.getAttribute('name');
+           addressP.innerHTML = tuple.getAttribute('address'); 
+           phoneP.innerHTML = tuple.getAttribute('phone'); 
+
+
+           document.getElementById("detailsContainer").append(nameP);
+           document.getElementById("detailsContainer").append(addressP);
+           document.getElementById("detailsContainer").append(phoneP);
+         }
+       }
+       </script> 
+              
+          
+
+
+       </article>
+
+
+        <footer style="padding: 20px; text-align: center; background: linear-gradient(0deg,#5BB7B1 0%, rgba(255, 255, 255, 0.1) 100%);">
+            <p><h3>Ingegneria del Software</h3></p>
+            <p>Diego Hernan Torlone - Matr. 936985</p>
+          </footer>
+
+</body>
+
+</html>

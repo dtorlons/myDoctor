@@ -5,9 +5,11 @@ window.addEventListener("load", function(){
     if(selectorMenu == null){
         //E' un paziente
         window.setInterval(getArr, 1000); //SI ESEGUE SE E' PAZIENTE
+        
     }else{
         document.getElementById("chatWindow").innerHTML = "Seleziona un paziente con cui chattare...";
         window.setInterval(getChat, 1000); //SI ESEGUE SE E' DOTTORE
+        
     }
 
 });
@@ -189,6 +191,13 @@ function makeCall(method, url, formElement, cback, reset = true) {
     event.preventDefault();
 
     form = document.getElementById("postForm");
+ 
+
+    if(document.getElementById('patientSelector')){
+        if(document.getElementById('patientSelector').value == ''){
+            alert("Seleziona qualcuno con cui chattare!");
+        }
+    }
 
     let url = (document.getElementById("patientSelector") == null)? 'PatientChat' : 'DoctorChat';
 
