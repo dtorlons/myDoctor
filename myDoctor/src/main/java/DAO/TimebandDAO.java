@@ -63,7 +63,8 @@ public class TimebandDAO implements DAO<Timeband, Doctor> {
 			result = ps.executeQuery();
 			while (result.next()) {
 				timeband = new Timeband(result.getInt("idDisponibilita"),
-						result.getTimestamp("inizio").toLocalDateTime(), result.getTimestamp("fine").toLocalDateTime(),
+						result.getTimestamp("inizio").toLocalDateTime(), 
+						result.getTimestamp("fine").toLocalDateTime(),
 						new DoctorDAO(connection).get(result.getInt("idMedico")),
 						result.getInt("durataStandard"));
 			}
@@ -79,6 +80,10 @@ public class TimebandDAO implements DAO<Timeband, Doctor> {
 			}
 		}
 
+		//qui non sono stati impostati gli appuntamenti relativi alla fascia...
+		
+		timeband.setAppuntamenti(new AppointmentDAO(connection).getAll(timeband));
+		
 		/*
 		 *	Return a timeband 
 		 */

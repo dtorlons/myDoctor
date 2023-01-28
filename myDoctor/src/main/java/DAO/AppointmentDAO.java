@@ -56,6 +56,7 @@ public class AppointmentDAO implements DAO<Appointment, Timeband>{
 		try {
 			ps = connection.prepareStatement(query);
 			ps.setInt(1, timeband.getId());
+			System.out.println("AppointmentDAO[getAll]\n" + ps.toString());
 		} catch (SQLException e) {
 			throw new DBException(e);
 		}
@@ -70,10 +71,12 @@ public class AppointmentDAO implements DAO<Appointment, Timeband>{
 			result = ps.executeQuery();
 
 			while (result.next()) {
-				Appointment a = new Appointment(result.getInt("idAppuntamento"), result.getInt("idDisponibilita"),
-						result.getTimestamp("inizio").toLocalDateTime(), result.getTimestamp("fine").toLocalDateTime(),
-						new PatientDAO(connection).get(result.getInt("idPaziente")),
-						result.getString("note"));
+				Appointment a = new Appointment(result.getInt("idAppuntamento"), 
+												result.getInt("idDisponibilita"),
+												result.getTimestamp("inizio").toLocalDateTime(), 
+												result.getTimestamp("fine").toLocalDateTime(),
+												new PatientDAO(connection).get(result.getInt("idPaziente")),
+												result.getString("note"));
 				appuntamenti.add(a); // Addition to the List
 			}
 		} catch (SQLException e) {
@@ -95,6 +98,9 @@ public class AppointmentDAO implements DAO<Appointment, Timeband>{
 		/*
 		 * Returns an ArrayList
 		 */
+		
+		System.out.println("************\n"+appuntamenti);
+		
 		return appuntamenti;
 	}
 	

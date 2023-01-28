@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import DAO.DoctorDAO;
+import DAO.DoctorDetailsDAO;
 import DAO.PatientDAO;
 import beans.Doctor;
 import beans.Patient;
@@ -48,6 +49,7 @@ public class CheckDoctorCredentials extends HttpServlet {
 		try {
 			doctor = new DoctorDAO(connection).checkCredentials(username, password);
 		} catch (DBException e) {
+			e.printStackTrace();
 			response.sendError(500, "Errore database");
 			return;			
 		}
@@ -56,7 +58,7 @@ public class CheckDoctorCredentials extends HttpServlet {
 			response.sendError(403, "Utente non esistente");
 			return;
 		}
-		
+				
 		
 		
 		List<Patient> patients;
@@ -64,13 +66,14 @@ public class CheckDoctorCredentials extends HttpServlet {
 		try {
 			patients = new PatientDAO(connection).getAll(doctor);
 		} catch (DBException e) {
+			e.printStackTrace();
 			response.sendError(500, "Errore database");
 			return;	
 		}
 		
 		request.getSession().setAttribute("medico", doctor);
 		request.getSession().setAttribute("pazienti", patients);  
-		request.getSession().setAttribute("role", "doctor"); // Questa cosa mi serve solo per una servlet....pensaci (request.setattribute?)
+		request.getSession().setAttribute("role", "doctor"); // Questa cosa mi serve solo per due servlet....pensaci (request.setattribute?)
 		
 		response.sendRedirect("Home");
 		

@@ -4,6 +4,8 @@
 <meta charset="ISO-8859-1">
 <title>My Doctor - Home</title>
 <link rel="icon" type="image/x-icon" href="images/heart.png">
+<script src="notifications.js" charset="UFT-8" defer></script>
+<script src="utils.js" charset="UFT-8" defer></script>
 
 <style>
     *{
@@ -67,6 +69,30 @@
     color: white;
     }
 
+     /*notifiche*/
+.close-button:hover{
+    cursor: pointer;
+}
+
+#notificationBell{
+    cursor: pointer;
+}
+
+.delNotificationsBtn{
+    font-size: 12px;
+    color:black;
+    background-color: white;
+    padding: 2px;
+    border-radius: 3px;
+}
+
+.delNotificationsBtn:hover{
+    background-color: #40807c;
+    color:white;
+    cursor: pointer;
+}
+
+
   </style>
 
 <body>    
@@ -78,17 +104,28 @@
           <div class="login_form">                      
                 <div class="header-right">
                     <span th:text="${'Benvenuto ' + dottore.doctorDetails.name}" style="font-weight: bold;">username</span>
-                    <span>notifiche</span>
-                    <span><button>Logout</button></span>
+                    <span id="notificationBell">notifiche</span>
+                     <span><button onclick="window.location.href = 'Logout';">Logout</button></span>
                  </div>            
            </div>
         </div>
     </header>
 
+    <div id="notification-modal" class="notification-modal" style="display: none; border: solid black; border-radius: 8px; padding: 10px; position: absolute; margin-left: 83%; margin-top: -60px; width: 180px; background: darkgrey;" >
+      <div class="modal-content">
+        <div class="close-button" style=" margin-left: 90%;">&times;</div>
+        
+        <div id="nofiticationContainer">
+          
+        </div>
+
+      </div>
+    </div>
+
       <br>
       <br>
 
-
+      
        <article style="min-height: 450px;">
 
          

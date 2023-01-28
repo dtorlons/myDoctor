@@ -36,7 +36,7 @@ public class DeleteTimeband extends HttpServlet {
 		//Manca la guardia
 
 		Doctor medico = (Doctor) request.getSession().getAttribute("medico");
-		
+				
 		
 		//Processo parametri
 		int timebandId;		
@@ -79,8 +79,7 @@ public class DeleteTimeband extends HttpServlet {
 			response.getWriter().print("Non si può eliminare una fascia oraria nel passato");
 			return;
 		}
-		
-		
+				
 		
 		try {
 			timebandDao.delete(timeband);
@@ -91,6 +90,7 @@ public class DeleteTimeband extends HttpServlet {
 		
 		
 		
+				
 		
 		//Avvisa tutti gli interessati
 		for(Appointment appointment: timeband.getAppuntamenti()) {

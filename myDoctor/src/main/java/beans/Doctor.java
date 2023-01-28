@@ -41,6 +41,15 @@ public class Doctor extends User{
 	public DoctorDetails getDoctorDetails() {
 		return this.doctorDetails;
 	}
+
+	@Override
+	public String toString() {
+		return "Doctor [id=" + id + ", username=" + username + ", password=" + password + ", doctorDetails="
+				+ doctorDetails + "]";
+	}
+
+	
+	
 	
 	
 	

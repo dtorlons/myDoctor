@@ -38,7 +38,7 @@ public class DoctorDAO implements DAO<Doctor, Patient> {
 	public Doctor get(int idMedico) throws DBException {
 
 		// Prepare the query
-		String query = "Select * from medico where idMedico = ?";
+		String query = "select idMedico, medico.username, user.password from medico join user on (medico.username = user.username) where idMedico = ?";
 
 		PreparedStatement ps = null;
 
@@ -82,15 +82,19 @@ public class DoctorDAO implements DAO<Doctor, Patient> {
 	
 	public Doctor checkCredentials(String username, String password) throws DBException {
 		
-		String query = "select * from medico where username = ? AND password = ?";
+		//String query = "select * from medico where username = ? AND password = ?";
+		
+		String query = "select idMedico, user.username,  password from user join medico on user.username = medico.username where user.username = ? AND user.password = ?"; 
 		
 		PreparedStatement ps = null;
 		
 		try {
 			ps = connection.prepareStatement(query);
 			ps.setString(1, username);
-			ps.setString(2, password);
+			ps.setString(2, password);			
+		
 		} catch (SQLException e) {
+			e.printStackTrace();
 			throw new DBException(e);
 		}
 		
@@ -106,6 +110,7 @@ public class DoctorDAO implements DAO<Doctor, Patient> {
 						new DoctorDetailsDAO(connection).get(result.getInt("idMedico")));
 			}
 		} catch (SQLException e) {
+			
 			throw new DBException(e);
 		}finally {
 			try {
@@ -113,7 +118,7 @@ public class DoctorDAO implements DAO<Doctor, Patient> {
 				result.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				
 			}
 		}
 		

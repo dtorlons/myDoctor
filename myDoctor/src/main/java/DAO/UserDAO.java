@@ -27,7 +27,9 @@ public class UserDAO implements DAO<User, String>{
 
 	public User get(String username) throws DBException {
 		
-		String query = "select * from (select idPaziente as id, username, password from paziente UNION select idMedico as id, username, password from medico) as users where username = ?";
+		//String query = "select * from (select idPaziente as id, username, password from paziente UNION select idMedico as id, username, password from medico) as users where username = ?";
+		
+		String query = "select * from user where username = ?";
 		
 		PreparedStatement ps = null;
 		
@@ -43,7 +45,7 @@ public class UserDAO implements DAO<User, String>{
 		try {
 			result = ps.executeQuery();
 			while(result.next()) {
-				user = new User(result.getInt("id"), result.getString("username"), result.getString("password"));
+				user = new User(result.getInt("usrId"), result.getString("username"), result.getString("password"));
 			}			
 		} catch (SQLException e) {
 			e.printStackTrace();

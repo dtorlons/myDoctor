@@ -84,7 +84,7 @@ public class MakeAppointment extends HttpServlet {
 		} catch (DBException e1) {
 			response.sendError(500, "Errore nel database");
 			return;			
-		}	
+		}
 		
 		if(timeband.getMedico().getId() != medico.getId()) {
 			response.sendError(403, "Non hai privilegi per effettuare questa operazione");

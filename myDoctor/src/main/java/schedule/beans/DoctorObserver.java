@@ -32,7 +32,7 @@ public class DoctorObserver extends Doctor implements Observer{
 	
 	//See interface Object or drag mouse over method prototype for info
 	public void update(String notification) throws DBException {		
-		new NotificationDAO(connection).post(this, notification);;
+		//new NotificationDAO(connection).post(this, notification);;
 	}
 	
 	

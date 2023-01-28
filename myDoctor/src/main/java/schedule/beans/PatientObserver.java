@@ -18,7 +18,7 @@ public class PatientObserver extends Patient implements Observer{
 	
 	
 	public void update(String notification) throws DBException {		
-		new NotificationDAO(connection).post(this, notification);		
+		//new NotificationDAO(connection).post(this, notification);		
 	}
 	
 	

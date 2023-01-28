@@ -40,7 +40,7 @@ public class PatientDAO implements DAO<Patient, Doctor>{
 	public Patient get(int pazienteId) throws DBException {
 		
 		//Prepare the query
-		String query = "select * from paziente where idPaziente = ?";
+		String query = "select idPaziente, idMedico, paziente.username, user.password from paziente join user on (paziente.username = user.username) where idPaziente = ?";
 		
 		PreparedStatement ps = null;
 		
@@ -48,6 +48,7 @@ public class PatientDAO implements DAO<Patient, Doctor>{
 		try {
 			ps = connection.prepareStatement(query);
 			ps.setInt(1, pazienteId);
+			System.out.println(ps.toString());
 		} catch (SQLException e) {
 			throw new DBException(e);
 		}
@@ -88,7 +89,9 @@ public class PatientDAO implements DAO<Patient, Doctor>{
 	
 	public Patient chechCredentials(String username, String password) throws DBException {
 		
-		String query = "select * from paziente where username = ? and password = ?";
+		//String query = "select * from paziente where username = ? and password = ?";
+		
+		String query = "select idPaziente, user.username, idMedico, password from user join paziente on user.username = paziente.username where user.username = ? AND user.password = ?";
 		
 		PreparedStatement ps = null;
 		
@@ -140,13 +143,13 @@ public class PatientDAO implements DAO<Patient, Doctor>{
 	public List<Patient> getAll(Doctor doctor) throws DBException {
 
 		//Prepare the query
-		String query = "select * from paziente where idMedico = ?";
+		String query = "select idPaziente, user.username, idMedico, password from paziente join user on user.username = paziente.username where idMedico = ?";
 		
 		PreparedStatement ps = null;
 		
 		try {
 			ps = connection.prepareStatement(query);
-			ps.setInt(1, doctor.getId());
+			ps.setInt(1, doctor.getId());			
 		} catch (SQLException e) {
 			throw new DBException(e);
 		}

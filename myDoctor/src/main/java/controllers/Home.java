@@ -19,7 +19,9 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import DAO.AppointmentDAO;
+import DAO.NotificationDAO;
 import beans.Doctor;
+import beans.Notification;
 import beans.Patient;
 import exceptions.DBException;
 import schedule.entities.Appointment;
@@ -51,6 +53,9 @@ public class Home extends HttpServlet {
 		
 		String role = (String) request.getSession().getAttribute("role");
 		
+		/*
+		 * 	RUOLO PAZIENTE	
+		 */
 		if (role.equals("patient")) {
 
 		Doctor medico = (Doctor) request.getSession().getAttribute("medico");
@@ -68,6 +73,8 @@ public class Home extends HttpServlet {
 		}
 		
 		
+		
+		
 		//passo al motore
 		String path = "/WEB-INF/Home_patient";
 		ServletContext servletContext = getServletContext();
@@ -75,12 +82,16 @@ public class Home extends HttpServlet {
 		 
 		ctx.setVariable("appuntamenti", appointments);
 		ctx.setVariable("paziente", patient);
-		ctx.setVariable("dottore", medico);
+		ctx.setVariable("dottore", medico);		
 		templateEngine.process(path, ctx, response.getWriter());
 		return;	
 		
 		} //END OF ROLE PATIENT
 		
+		
+		/*
+		 * RUOLO DOTTORE
+		 */
 		else if (role.equals("doctor")) {
 			
 		
@@ -93,9 +104,9 @@ public class Home extends HttpServlet {
 		} catch (DBException e) {
 			response.sendError(500, "Errore database");
 			return;
-		}
-		
-		
+		}	
+			
+				
 								
 		String path = "/WEB-INF/Home_doctor";
 		ServletContext servletContext = getServletContext();
@@ -103,7 +114,7 @@ public class Home extends HttpServlet {
 		
 		ctx.setVariable("oggi", today);
 		ctx.setVariable("pazienti", patients);
-		ctx.setVariable("dottore", doctor);
+		ctx.setVariable("dottore", doctor);	
 		templateEngine.process(path, ctx, response.getWriter());
 		return;	
 			
