@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import DAO.AppointmentDAO;
 import beans.Patient;
 import exceptions.DBException;
-import schedule.entities.Appointment;
+import schedule.Appointment;
 import utils.ConnectionHandler;
 
 /**
@@ -29,31 +29,11 @@ public class CancelAppointment extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		Patient self = (Patient)request.getSession().getAttribute("patient");		
 		
-		int appointmentId = Integer.parseInt(request.getParameter("appointmentId"));
-						
-		AppointmentDAO appointmentDao = new AppointmentDAO(connection);
-		Appointment appointment = null;
-		try {
-			appointment = appointmentDao.get(appointmentId);
-		} catch (DBException e) {
-			response.sendError(500, "Errore database");
-			return;
-		}
-		
-		if(appointment == null) {
-			response.sendError(400, "Parametri errati, l'appuntamento non esiste");
-			return;
-		}
-		
-		if(appointment.getPaziente().getId() != self.getId()) {
-			response.sendError(403, "Non possiedi privilegi per effetturare questa operazione");
-			return;
-		}
+		Appointment appointment = (Appointment) request.getAttribute("appointment");
 		
 		try {
-			appointmentDao.delete(appointment);
+			new AppointmentDAO(connection).delete(appointment);
 		} catch (DBException e) {
 			response.sendError(500, "Errore database");
 			return;

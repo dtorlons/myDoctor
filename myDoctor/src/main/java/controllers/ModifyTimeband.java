@@ -18,8 +18,7 @@ import DAO.TimebandDAO;
 import beans.Doctor;
 import exceptions.DBException;
 import exceptions.UpdateException;
-
-import schedule.entities.Timeband;
+import schedule.Timeband;
 import utils.ConnectionHandler;
 
 
@@ -37,65 +36,68 @@ public class ModifyTimeband extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		Doctor medico = (Doctor) request.getSession().getAttribute("medico");
+//		Doctor medico = (Doctor) request.getSession().getAttribute("medico");
+//		
+//		//guardia
+//		
+//		//ottenimento parametri
+//		
+//		int timebandId = -1;
+//		LocalDate date = null;
+//		LocalTime begin = null;
+//		LocalTime end = null;
+//		int length = 0;
+//		
+//		try {
+//			timebandId = Integer.parseInt(request.getParameter("timebandId"));
+//			date = LocalDate.parse(request.getParameter("data"));
+//			begin = LocalTime.parse(request.getParameter("inizio"));
+//			end = LocalTime.parse(request.getParameter("fine"));
+//			length = Integer.parseInt(request.getParameter("minutes"));
+//		}catch(Exception e) {
+//			e.printStackTrace();
+//			response.getWriter().print("Errore nei parametri");	
+//			return;
+//		}
+//		
+//		//controllo parametri
+//		
+//		if(timebandId <1 || length <5 || length >60 || begin == null || end == null || date == null) {
+//			response.getWriter().println("Parametri non validi");
+//			return;
+//		}
+//		
+//		if(LocalDateTime.of(date, begin).isBefore(LocalDateTime.now())){
+//			response.getWriter().println("Non si possono apportare modifiche ad eventi del passato");
+//			return;
+//		}
+//		
+//		
+//		final TimebandDAO timebandDao = new TimebandDAO(connection);
+//				
+//		
+//		Timeband timeband;
+//		
+//		try {
+//			timeband = timebandDao.get(timebandId);
+//		} catch (DBException e) {
+//			response.sendError(500, "Errore database");
+//			return;
+//		}
+//		
+//		if(timeband.getMedico().getId() != medico.getId()) {
+//			response.sendError(400, "Non ha i privilegi");
+//			return;
+//		}		
+//		
+//		timeband.setInizio(LocalDateTime.of(date, begin));
+//		timeband.setFine(LocalDateTime.of(date, end));
 		
-		//guardia
 		
-		//ottenimento parametri
-		
-		int timebandId = -1;
-		LocalDate date = null;
-		LocalTime begin = null;
-		LocalTime end = null;
-		int length = 0;
+		Timeband timeband = (Timeband) request.getAttribute("timeband");
 		
 		try {
-			timebandId = Integer.parseInt(request.getParameter("timebandId"));
-			date = LocalDate.parse(request.getParameter("data"));
-			begin = LocalTime.parse(request.getParameter("inizio"));
-			end = LocalTime.parse(request.getParameter("fine"));
-			length = Integer.parseInt(request.getParameter("minutes"));
-		}catch(Exception e) {
-			e.printStackTrace();
-			response.getWriter().print("Errore nei parametri");	
-			return;
-		}
-		
-		//controllo parametri
-		
-		if(timebandId <1 || length <5 || length >60 || begin == null || end == null || date == null) {
-			response.getWriter().println("Parametri non validi");
-			return;
-		}
-		
-		if(LocalDateTime.of(date, begin).isBefore(LocalDateTime.now())){
-			response.getWriter().println("Non si possono apportare modifiche ad eventi del passato");
-			return;
-		}
-		
-		
-		final TimebandDAO timebandDao = new TimebandDAO(connection);
-				
-		
-		Timeband timeband;
-		
-		try {
-			timeband = timebandDao.get(timebandId);
-		} catch (DBException e) {
-			response.sendError(500, "Errore database");
-			return;
-		}
-		
-		if(timeband.getMedico().getId() != medico.getId()) {
-			response.sendError(400, "Non ha i privilegi");
-			return;
-		}		
-		
-		timeband.setInizio(LocalDateTime.of(date, begin));
-		timeband.setFine(LocalDateTime.of(date, end));
-		
-		try {
-			timebandDao.update(timeband);
+			new TimebandDAO(connection).update(timeband);
 		} catch (DBException e) {
 			response.sendError(500, "Errore database");
 			return;

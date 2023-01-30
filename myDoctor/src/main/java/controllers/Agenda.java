@@ -23,8 +23,8 @@ import DAO.AppointmentDAO;
 import beans.Doctor;
 import beans.Patient;
 import exceptions.DBException;
-import schedule.entities.Appointment;
-import schedule.entities.Day;
+import schedule.Appointment;
+import schedule.Day;
 import utils.ConnectionHandler;
 
 /**
@@ -61,7 +61,7 @@ public class Agenda extends HttpServlet {
 		
 		//Ottenimento dei parametri (Se dati)
 		
-		String data = request.getParameter("data");
+		String data = request.getParameter("data");		
 		LocalDate beginDate;
 		try {
 			 beginDate = LocalDate.parse(data).with(DayOfWeek.MONDAY);			 

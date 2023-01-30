@@ -14,8 +14,7 @@ import beans.Doctor;
 import exceptions.DBException;
 import exceptions.InsertionException;
 import exceptions.UpdateException;
-
-import schedule.entities.Timeband;
+import schedule.Timeband;
 
 /**°
  * An implementation of the interface {@link DAO}

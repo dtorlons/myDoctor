@@ -43,7 +43,7 @@ public class NotificationDAO implements DAO<Notification, User>{
 	@Override
 	public List<Notification> getAll(User user) throws DBException {
 
-		String query = "select * from notifica where username = ?";
+		String query = "select * from notifica where username = ? order by timestamp asc";
 		
 		PreparedStatement ps = null;
 		

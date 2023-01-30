@@ -9,11 +9,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import beans.Archive;
 import beans.Message;
 import beans.User;
 import exceptions.DBException;
 import exceptions.UpdateException;
-import utils.Archive;
 
 public class MessageDAO implements DAO<Message, User>{
 	
@@ -57,7 +58,7 @@ public class MessageDAO implements DAO<Message, User>{
 											new UserDAO(connection).get(result.getString("sender")), 
 											result.getTimestamp("timestamp"), 
 											result.getString("message"), 
-											result.getBlob("attachment"), 
+											null, 
 											result.getString("filename")));
 			}
 		} catch (SQLException e) {		

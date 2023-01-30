@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.time.LocalDateTime;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,8 +15,8 @@ import DAO.AppointmentDAO;
 import DAO.TimebandDAO;
 import beans.Doctor;
 import exceptions.DBException;
-import schedule.entities.Appointment;
-import schedule.entities.Timeband;
+import schedule.Appointment;
+import schedule.Timeband;
 import utils.ConnectionHandler;
 
 
@@ -31,56 +32,21 @@ public class DeleteAppointment extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		//Manca la guardia
-		
-		Doctor medico = (Doctor) request.getSession().getAttribute("medico");
 
-		//Controllo parametri
-		
-		int appointmentId = -1;		
+		Appointment appointment = (Appointment)request.getAttribute("appointment");
 		
 		try {
-			appointmentId = Integer.parseInt(request.getParameter("appointmentId"));
-		}catch(Exception e) {
-			e.printStackTrace();
-			response.getWriter().println("Parametri errati");
-		}
-		
-		if(appointmentId <1) {
-			response.getWriter().print("Id Appuntamento non valido");
-			return;
-		}
-		
-		AppointmentDAO appointmentDao = new AppointmentDAO(connection);
-		
-		Appointment appointment;
-		try {
-			appointment = appointmentDao.get(appointmentId);
-		} catch (DBException e1) {
-			response.sendError(500, "Errore database");
-			return;
-		}
-		
-		Timeband timeband;
-		try {
-			timeband = new TimebandDAO(connection).get(appointment.getDisponibilitàId());
-		} catch (DBException e) {
-			response.sendError(500, "Errore nel database");
-			return;
-		}
-		
-		if(timeband.getMedico().getId() != medico.getId()) {
-			response.getWriter().println("Non puoi eliminare appuntamenti che non ti appartengono");
-			return;
-		}
-		
-		
-		try {
-			appointmentDao.delete(appointment);
+			new AppointmentDAO(connection).delete(appointment);
 		} catch (DBException e) {
 			response.sendError(500, "Errore database");
 			return;
 		}
+
+		
+		
+		
+		//AVVISA TUTTI
+		Timeband timeband = (Timeband) request.getAttribute("timeband");
 		
 		appointment.getPaziente().setConnection(connection);
 		timeband.getMedico().setConnection(connection);

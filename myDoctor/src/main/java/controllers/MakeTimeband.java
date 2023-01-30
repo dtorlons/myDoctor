@@ -15,14 +15,10 @@ import DAO.TimebandDAO;
 import beans.Doctor;
 import exceptions.DBException;
 import exceptions.InsertionException;
-import schedule.entities.Timeband;
+import schedule.Timeband;
 import utils.ConnectionHandler;
 
-/**
- * 
- * @author diego
- *
- */
+
 @WebServlet("/MakeTimeband")
 public class MakeTimeband extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -35,54 +31,12 @@ public class MakeTimeband extends HttpServlet {
 	}
 
 	
-	
-
-	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		
-		/**
-		 * MANCA LA GUARDIA ED IL CONTROLLO PARAMETRI
-		 */
-		
-		Doctor medico = (Doctor) request.getSession().getAttribute("medico");		
-		
-		String _data = request.getParameter("data");
-		String _inizio = request.getParameter("inizio");
-		String _fine = request.getParameter("fine");
-		int minuti;
-		
-		try {
-			minuti = Integer.parseInt(request.getParameter("minutes"));
-		}catch(Exception e) {
-			response.getWriter().println("Errore nei minuti");
-			return;
-		}
-				
-		
-		LocalDate date = LocalDate.parse(_data);
-		LocalDateTime inizio = LocalDateTime.of(date, LocalTime.parse(_inizio));
-		LocalDateTime fine = LocalDateTime.of(date, LocalTime.parse(_fine));
+		Doctor medico = (Doctor) request.getSession().getAttribute("medico");	
 		
 		
-		if(inizio.isBefore(LocalDateTime.now()) || fine.isBefore(inizio)) {
-			response.getWriter().println("Errore nelle date");
-			return;
-		}
-		
-		if(inizio.plusMinutes(5).isAfter(fine)) {
-			response.getWriter().println("Durata minima 5 minuti");
-			return;
-		}
-		
-		if(!(minuti>= 5 && minuti<=60)) {
-			response.getWriter().println("Durata fuori dal range");
-			return;
-		}
-				
-		
-		
-		Timeband temporaryTimeband = new Timeband(inizio, fine, medico, minuti);
-		
+		Timeband temporaryTimeband = (Timeband )request.getAttribute("temporaryTimeband");		
 		
 		final TimebandDAO timebandDao = new TimebandDAO(connection);
 		
@@ -96,24 +50,10 @@ public class MakeTimeband extends HttpServlet {
 			return;
 		}
 		
-		String data = inizio.toLocalDate().toString(); 
+		String data = temporaryTimeband.getInizio().toLocalDate().toString(); 
 		String path = this.getServletContext().getContextPath() + "/GestioneAgenda?data="+data;;
 		response.sendRedirect(path); 
 		return;
-		
-		
-//		if(!timebandDao.isOverlap(temp)) {
-//			timebandDao.putTimeband(temp, medico); // qui c'è da correggere perchè timeband ha già l'attributo medico
-//			String data = inizio.toLocalDate().toString(); 
-//			String path = this.getServletContext().getContextPath() + "/GestioneAgenda?data="+data;;
-//			response.sendRedirect(path); 
-//			
-//		}else {
-//			response.getWriter().print("Non inserita");
-//		}
-		
-		
-				
 		
 	}
 

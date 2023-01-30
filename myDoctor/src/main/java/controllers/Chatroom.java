@@ -1,7 +1,6 @@
 package controllers;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -11,12 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import beans.Doctor;
-import beans.Patient;
+import strategy.RoleStrategy;
 
 /**
  * Servlet implementation class Chatroom
@@ -38,61 +35,13 @@ public class Chatroom extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		String role = (String) request.getSession().getAttribute("role");
-
-		/*
-		 * qui si potrebbe implementare uno strategy. Te lo spiego: c'è un interfaccia
-		 * con il metodo prepareContext(T cot). Nota bene il tipo parametrico. Infatti
-		 * l'interfaccia, parametrica rispetto a T, è implementata dalle classi:
-		 * -DoctorPreparer (nomi di fantasia) -PatientPrepare
-		 * 
-		 * Ognuna di queste parametrica rispetto a medico o paziente. Poi vedremo che
-		 * parametri passare a questi metodi.
-		 * 
-		 * Dunque, le ultime due classi sono le concrete strategy; l'interfaccia è
-		 * l'interfaccia Stategy. code: Strategy strategy = new Strategy ()
-		 */
-
-		if (role.equals("patient")) {
-			
-			System.out.println("RICHESTA CHAT PAZIENTE");
-
-			Patient patient = (Patient) request.getSession().getAttribute("patient");
-			Doctor doctor = (Doctor) request.getSession().getAttribute("medico");
-
-			String path = "/WEB-INF/Chat.html";
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("paziente", patient);
-			ctx.setVariable("dottore", doctor);
-			templateEngine.process(path, ctx, response.getWriter());
-			return;
-
-		} // END ROLE PATIENT
 		
-		else if (role.equals("doctor")) {
-			
-			
-			
-			Doctor doctor = (Doctor) request.getSession().getAttribute("medico");
-			List<Patient> patients = (List<Patient>) request.getSession().getAttribute("pazienti");
-
-			String path = "/WEB-INF/Chat.html";
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("pazienti", patients);
-			ctx.setVariable("dottore", doctor);
-			templateEngine.process(path, ctx, response.getWriter());
-			return;
-
-
-
-		} else {
-			response.sendError(403, "No role, not allowed");
-			return;
-		}
-
+		RoleStrategy strategy = (RoleStrategy) request.getSession().getAttribute("roleStrategy");		
+		
+		templateEngine.process(	strategy.getChatroomTemplate(), 
+								strategy.getChatroomContext(request, response, getServletContext()), 
+								response.getWriter());
+		return;
 	}
 
 }

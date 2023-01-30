@@ -37,7 +37,7 @@ function getChat(){
 
 
 
-    makeCall("GET", 'DoctorChat?patientId='+idPaziente, null, function (req) {
+    makeCall("GET", 'ChatMessage?patientId='+idPaziente, null, function (req) {
         if (req.readyState == 4) {
             if (req.status == 200) {
                 var responseArray = JSON.parse(req.responseText);                   
@@ -75,7 +75,8 @@ function getChat(){
 
 function getArr(){   
 
-    makeCall("GET", 'PatientChat', null, function (req) {
+  //  makeCall("GET", 'PatientChat', null, function (req) {
+	  makeCall("GET", 'ChatMessage', null,  function(req){
         if (req.readyState == 4) {
             if (req.status == 200) {
                 var responseArray = JSON.parse(req.responseText);                   
@@ -183,7 +184,9 @@ function render(messageArray){
         }
     }
 
-    let url = (document.getElementById("patientSelector") == null)? 'PatientChat' : 'DoctorChat';
+   // let url = (document.getElementById("patientSelector") == null)? 'PatientChat' : 'DoctorChat';
+   
+   let url = 'ChatMessage';
 
     makeCall("post", url, form, function (req) {
         if (req.readyState == 4) {

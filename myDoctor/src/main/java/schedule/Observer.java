@@ -1,4 +1,4 @@
-package schedule.beans;
+package schedule;
 
 import java.sql.Connection;
 

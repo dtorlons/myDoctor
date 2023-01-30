@@ -13,8 +13,8 @@ import beans.Patient;
 import exceptions.DBException;
 import exceptions.InsertionException;
 import exceptions.UpdateException;
-import schedule.entities.Appointment;
-import schedule.entities.Timeband;
+import schedule.Appointment;
+import schedule.Timeband;
 
 /**°
  * An implementation of the interface {@link DAO}

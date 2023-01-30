@@ -16,6 +16,7 @@ import DAO.PatientDAO;
 import beans.Doctor;
 import beans.Patient;
 import exceptions.DBException;
+import strategy.DoctorStrategy;
 import utils.ConnectionHandler;
 
 /**
@@ -36,13 +37,10 @@ public class CheckDoctorCredentials extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	
-		request.getSession().invalidate();
-		
-		//il filtro qui controlla i parametri username e password non nulli;
+		request.getSession().invalidate();		
 		
 		String username = request.getParameter("username").trim();
 		String password = request.getParameter("password").trim();
-
 		
 		Doctor doctor = null;
 		
@@ -57,9 +55,7 @@ public class CheckDoctorCredentials extends HttpServlet {
 		if(doctor == null) {
 			response.sendError(403, "Utente non esistente");
 			return;
-		}
-				
-		
+		}		
 		
 		List<Patient> patients;
 		
@@ -73,7 +69,7 @@ public class CheckDoctorCredentials extends HttpServlet {
 		
 		request.getSession().setAttribute("medico", doctor);
 		request.getSession().setAttribute("pazienti", patients);  
-		request.getSession().setAttribute("role", "doctor"); // Questa cosa mi serve solo per due servlet....pensaci (request.setattribute?)
+		request.getSession().setAttribute("roleStrategy", new DoctorStrategy(connection));		
 		
 		response.sendRedirect("Home");
 		

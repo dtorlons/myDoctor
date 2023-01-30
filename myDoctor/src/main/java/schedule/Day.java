@@ -1,4 +1,4 @@
-package schedule.entities;
+package schedule;
 
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -69,5 +69,6 @@ public class Day {
 	public boolean isPast() {
 		return !day.isBefore(LocalDate.now().minusDays(1));
 	}	
+	
 
 }

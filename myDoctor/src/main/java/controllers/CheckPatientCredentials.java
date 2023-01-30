@@ -14,6 +14,7 @@ import DAO.PatientDAO;
 import beans.Doctor;
 import beans.Patient;
 import exceptions.DBException;
+import strategy.PatientStrategy;
 import utils.ConnectionHandler;
 
 /**
@@ -71,7 +72,10 @@ public class CheckPatientCredentials extends HttpServlet {
 		
 		request.getSession().setAttribute("medico", doctor);
 		request.getSession().setAttribute("patient", patient);		
-		request.getSession().setAttribute("role", "patient");
+		request.getSession().setAttribute("roleStrategy", new PatientStrategy(connection));
+		
+		//DEPRECABILE
+		request.getSession().setAttribute("role", "patient"); //DEPRECABILE
 		
 		//REDIRECT TO HOME PAGE
 		

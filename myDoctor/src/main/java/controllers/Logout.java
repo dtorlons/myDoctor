@@ -16,7 +16,7 @@ public class Logout extends HttpServlet {
        
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getSession().invalidate();		
+		request.getSession().invalidate();		//Qui metti un try catch in caso la sessione non esista più
 		response.sendRedirect("/myDoctor");
 	}
 

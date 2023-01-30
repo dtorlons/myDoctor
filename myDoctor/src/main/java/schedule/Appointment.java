@@ -1,8 +1,7 @@
-package schedule.entities;
+package schedule;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import beans.Patient;
-import schedule.beans.PatientObserver;
 
 /**
   * This can be thought of as the formal arrangement in which Doctor and Patient meet  at a particular time. 

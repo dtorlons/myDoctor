@@ -1,4 +1,4 @@
-package schedule.entities;
+package schedule;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -6,7 +6,6 @@ import java.util.List;
 
 
 import beans.Doctor;
-import schedule.beans.DoctorObserver;
 
 /**
  * A Timeband is the time of day that in which the appointments take place.

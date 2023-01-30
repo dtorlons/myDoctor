@@ -19,7 +19,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import beans.Doctor;
 import beans.Patient;
 import exceptions.DBException;
-import schedule.entities.Day;
+import schedule.Day;
 import utils.ConnectionHandler;
 
 @WebServlet("/GestioneAgenda")
@@ -44,7 +44,7 @@ public class GestioneAgenda extends HttpServlet {
 	}
 	
 	
-	@SuppressWarnings("unchecked")
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 						
 		Doctor medico = (Doctor) request.getSession().getAttribute("medico");				
