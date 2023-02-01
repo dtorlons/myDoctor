@@ -10,43 +10,56 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import beans.Appointment;
 import beans.Doctor;
+import beans.Timeband;
 import exceptions.DBException;
 import exceptions.InsertionException;
 import exceptions.UpdateException;
-import schedule.Timeband;
 
-/**°
- * An implementation of the interface {@link DAO}
- * Specific for the entity Timeband 
+/**
+ * An implementation of the interface {@link DAO} allowing to interact with the
+ * <i>{@link Timeband}</i> entity on the database
+ *
+ * <p>
+ * It provides methods to perform CRUD (Create, Read, Update, Delete) operations
+ * on the Timeband table in the database.
+ * </p>
+ *
+ * @author Diego Torlone
+ *
  */
 public class TimebandDAO implements DAO<Timeband, Doctor> {
 
 	private final Connection connection;
 
 	/**
-	 * Data Access Object to interact with the 'Timeband' entity on the database.
-	 * 
+	 * Data Access Object to interact with the '{@link Timeband}' entity on the database.
+	 *
 	 * @param connection A connection (session) with a database
 	 */
 	public TimebandDAO(Connection connection) {
 		this.connection = connection;
 	}
-	
+
 	/**
-	 * 	Returns a Timeband object corresponding to the identifier in the parameter
-	 * 
-	 * @return A timeband with a specific id
+	 * Returns a {@link Timeband} object that corresponds to a given ID from the
+	 * database.
+	 *
+	 * @param timebandId - The identifier of the Timeband to be fetched
+	 * @return The {@link Timeband} matching the given ID if it exists, <i>null</i>
+	 *         otherwise.
 	 * @throws DBException if the session with the database fails
 	 */
+	@Override
 	public Timeband get(int timebandId) throws DBException {
 
-		//Prepare the query
+		// Prepare the query
 		String query = "select * from disponibilita where idDisponibilita = ?";
 
 		PreparedStatement ps = null;
 
-		//Set all the parameters
+		// Set all the parameters
 		try {
 			ps = connection.prepareStatement(query);
 			ps.setInt(1, timebandId);
@@ -54,7 +67,7 @@ public class TimebandDAO implements DAO<Timeband, Doctor> {
 			throw new DBException(e);
 		}
 
-		//Launch the query, obtain the results and close the resources
+		// Launch the query and obtain the results
 		ResultSet result = null;
 		Timeband timeband = null;
 
@@ -62,15 +75,15 @@ public class TimebandDAO implements DAO<Timeband, Doctor> {
 			result = ps.executeQuery();
 			while (result.next()) {
 				timeband = new Timeband(result.getInt("idDisponibilita"),
-						result.getTimestamp("inizio").toLocalDateTime(), 
-						result.getTimestamp("fine").toLocalDateTime(),
-						new DoctorDAO(connection).get(result.getInt("idMedico")),
-						result.getInt("durataStandard"));
+						result.getTimestamp("inizio").toLocalDateTime(), result.getTimestamp("fine").toLocalDateTime(),
+						new DoctorDAO(connection).get(result.getInt("idMedico")), result.getInt("durataStandard"));
 			}
 		} catch (SQLException e) {
 			throw new DBException(e);
 
-		} finally {
+		}
+		// Disposal of the resources
+		finally {
 			try {
 				result.close();
 				ps.close();
@@ -79,71 +92,72 @@ public class TimebandDAO implements DAO<Timeband, Doctor> {
 			}
 		}
 
-		//qui non sono stati impostati gli appuntamenti relativi alla fascia...
-		
+		// Sets all the {@link Appointment} related to the timeband
 		timeband.setAppuntamenti(new AppointmentDAO(connection).getAll(timeband));
-		
+
 		/*
-		 *	Return a timeband 
+		 * Return a timeband
 		 */
 		return timeband;
 	}
 
 	/**
-	 * Not implemented 
+	 * Not implemented
 	 *
-	 *@deprecated
+	 * @deprecated
 	 * @throws UnsupportedOperationException always
-	 */	
+	 */
+	@Deprecated
+	@Override
 	public List<Timeband> getAll(Doctor ex) {
-		throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException("Not supported");
 	}
-	
+
 	/**
-	 * Returns a List of Timebands belonging to a Day of a specific Doctor
-	 * <p>
-	 * This method returns <i>null</i> if a DB access error occurs; returns the
-	 * requested list otherwise
-	 * </p>
-	 * 
-	 * @param date The LocalDate object indicating the requested Day
-	 * @param Doctor The Doctor in question
-	 * @return a list of Appointments relative to the given timeband.
-	 * @throws DBException if the session with the database fails
-	 */	
-	public List<Timeband> getAll(LocalDate date, Doctor doctor) throws DBException{
-		
-		//Prepare the query
+	 *
+	 * Returns a list of {@link Timeband} for a given Doctor and LocalDate
+	 *
+	 * @param date   {@link LocalDate} object representing the date for which the Timebands
+	 *               are requested
+	 * @param doctor {@link Doctor} object representing the doctor whose Timebands are
+	 *               requested
+	 * @return A List of Timebands that correspond to the given doctor and LocalDate
+	 * @throws DBException If the session with the database fails
+	 */
+
+	public List<Timeband> getAll(LocalDate date, Doctor doctor) throws DBException {
+
+		// Prepare the query
 		String query = "select * from disponibilita where idMedico = ? AND cast(inizio as date)= ?";
-		
+
 		PreparedStatement ps = null;
-		
-		//Set all the query values
+
+		// Set all the query values
 		try {
 			ps = connection.prepareStatement(query);
 			ps.setInt(1, doctor.getId());
 			ps.setDate(2, java.sql.Date.valueOf(date));
 		} catch (SQLException e) {
-			throw new DBException (e);			
+			throw new DBException(e);
 		}
-		
-		//Launch the query, compute the list, close the resources
+
+		// Launch the query, compute the list
 		ResultSet result = null;
-		List<Timeband> timebands = new ArrayList<>();		
+		List<Timeband> timebands = new ArrayList<>();
 		try {
 			result = ps.executeQuery();
-			
-			while(result.next()) {
-				timebands.add( new Timeband(result.getInt("idDisponibilita"),
-											result.getTimestamp("inizio").toLocalDateTime(), 
-											result.getTimestamp("fine").toLocalDateTime(),
-											new DoctorDAO(connection).get(result.getInt("idMedico")),
-											result.getInt("durataStandard"))							
-						);
+
+			while (result.next()) {
+				timebands.add(new Timeband(result.getInt("idDisponibilita"),
+						result.getTimestamp("inizio").toLocalDateTime(), result.getTimestamp("fine").toLocalDateTime(),
+						new DoctorDAO(connection).get(result.getInt("idMedico")), result.getInt("durataStandard")));
 			}
 		} catch (SQLException e) {
 			throw new DBException(e);
-		}finally {
+		}
+
+		//Disposal of the resources
+		finally {
 			try {
 				result.close();
 				ps.close();
@@ -151,48 +165,50 @@ public class TimebandDAO implements DAO<Timeband, Doctor> {
 				System.err.println(e.getMessage());
 			}
 		}
-		
 
-		//Fill up each timeband with its appointments		
-		for(Timeband timeband : timebands) {
+		// Fill up each timeband with its appointments
+		for (Timeband timeband : timebands) {
 			timeband.setAppuntamenti(new AppointmentDAO(connection).getAll(timeband));
 			timeband.setFreeAppointments(new AppointmentDAO(connection).getAllFree(timeband));
 		}
-		
-		
+
 		return timebands;
-		
+
 	}
 
 	/**
-	 * <p>Insertion of a given Timeband for a Doctor</p>
-	 * 
-	 * @param Tiemeband The timeband to be inserted
-	 * @param Doctor The Doctor associated with the timeband
-	 * @throws DBException If interaction with the database fails
-	 * @throws InsertionException If the business rules regarding the operation are not adhered to
+	 * <p>
+	 * Insertion of a given Timeband for a Doctor
+	 * </p>
+	 *
+	 * @param timeband The {@link Timeband} to be inserted
+	 * @param doctor    The {@link Doctor} associated with the timeband
+	 * @throws DBException        If interaction with the database fails
+	 * @throws InsertionException If the business rules regarding the operation are
+	 *                            not adhered to
 	 */
-	public void insert(Timeband timeband, Doctor medico) throws DBException, InsertionException {
+	@Override
+	public void insert(Timeband timeband, Doctor doctor) throws DBException, InsertionException {
 
-		//Prepare the query
+		// Prepare the query
 		String query = "CALL InserimentoDisponibilita (?, ?, ?, ?, ?, ?)";
 
 		CallableStatement ps = null;
 
-		//Set all the query values
+		// Set all the query values
 		try {
 			ps = connection.prepareCall(query);
 			ps.setDate(1, java.sql.Date.valueOf(timeband.getInizio().toLocalDate()));
 			ps.setTime(2, java.sql.Time.valueOf(timeband.getInizio().toLocalTime()));
 			ps.setTime(3, java.sql.Time.valueOf(timeband.getFine().toLocalTime()));
-			ps.setInt(4, medico.getId());
+			ps.setInt(4, doctor.getId());
 			ps.setInt(5, timeband.getStandardAppointmentLength());
-			ps.registerOutParameter(6, Types.VARCHAR);			
+			ps.registerOutParameter(6, Types.VARCHAR);
 		} catch (SQLException e) {
 			throw new DBException(e);
 		}
-		
-		//Execute the query and obtain an outcome, then close all the resources
+
+		// Execute the query and obtain an outcome
 		String outcome = null;
 
 		try {
@@ -200,36 +216,43 @@ public class TimebandDAO implements DAO<Timeband, Doctor> {
 			outcome = ps.getString(6);
 		} catch (SQLException e) {
 			throw new DBException(e);
-		} finally {
+		}
+
+		//Disposal of the resources
+		finally {
 			try {
 				ps.close();
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
 			}
 		}
-		
-		//Propagate business rule violation to the user
+
+		// Propagate business rule violation to the user
 		if (!outcome.equals("OK")) {
 			throw new InsertionException(outcome);
 		}
-		
+
 		return;
 	}
 
+
+
 	/**
-	 * Updates the Timeband object given as a parameter
-	 * 
-	 * @throws DBException if the session with the database fails
-	 * @throws UpdateException in case the business rule regarding the operation is not adhered to
+	 * Updates an existing {@link Timeband} in the database.
+	 *
+	 *	@param timeband The updated {@link Timeband} object.
+	 * @throws DBException     if the session with the database fails
+	 * @throws UpdateException If a business rule violation occurs
 	 */
+	@Override
 	public void update(Timeband timeband) throws DBException, UpdateException {
 
-		//Prepare the query
+		// Prepare the query
 		String query = "CALL UpdateDisponibilita(?, ?, ?, ?, ?, ?)";
 
 		CallableStatement ps = null;
 
-		//Set all the query values
+		// Set all the query values
 		try {
 			ps = connection.prepareCall(query);
 			ps.setDate(1, java.sql.Date.valueOf(timeband.getInizio().toLocalDate()));
@@ -242,7 +265,7 @@ public class TimebandDAO implements DAO<Timeband, Doctor> {
 			throw new DBException(e);
 		}
 
-		//Execute the query, obtain an outcome, then close all the resources
+		// Execute the query, obtain an outcome
 
 		String outcome = null;
 		try {
@@ -251,7 +274,10 @@ public class TimebandDAO implements DAO<Timeband, Doctor> {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DBException(e);
-		} finally {
+		}
+
+		//Disposal of resources
+		finally {
 			try {
 				ps.close();
 			} catch (SQLException e) {
@@ -259,7 +285,7 @@ public class TimebandDAO implements DAO<Timeband, Doctor> {
 			}
 		}
 
-		//Propagate business rule violation to the user
+		// Propagate business rule violation to the user
 		if (!outcome.equals("OK")) {
 			throw new UpdateException(outcome);
 		}
@@ -268,45 +294,49 @@ public class TimebandDAO implements DAO<Timeband, Doctor> {
 
 	}
 
+
+
 	/**
-	 * <p>Deletes the Timeband entry in the database <b>and all the appointments associated with it!</b></p>
-	 * 
-	 * @param Timeband The Timeband to be deleted
+	 * <p>
+	 * Deletes a given {@link Timeband} from the database.
+	 * </p>
+	 *
+	 * @param timeband The {@link Timeband} to be deleted
 	 * @throws DBException if the session with the database fails
 	 *
 	 */
+	@Override
 	public void delete(Timeband timeband) throws DBException {
 
-		//Prepare the query
+		// Prepare the query
 		String query = "delete from disponibilita where idDisponibilita = ?";
 
 		PreparedStatement ps = null;
 
-		//Set all the query values
+		// Set all the query values
 		try {
 			ps = connection.prepareStatement(query);
 			ps.setInt(1, timeband.getId());
 		} catch (SQLException e) {
 			throw new DBException(e);
 		}
-		//Execute the query,  then close all the resources
+		// Execute the query
 		try {
 			ps.execute();
 		} catch (Exception e) {
 			throw new DBException(e);
 		}
 
+		//Disposal of the resources
+		finally {
 		try {
 			ps.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}}
 
 		return;
 
 	}
 
-	
-
-	
 }

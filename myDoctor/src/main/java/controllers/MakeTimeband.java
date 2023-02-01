@@ -2,9 +2,7 @@ package controllers;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,33 +11,44 @@ import javax.servlet.http.HttpServletResponse;
 
 import DAO.TimebandDAO;
 import beans.Doctor;
+import beans.Timeband;
 import exceptions.DBException;
 import exceptions.InsertionException;
-import schedule.Timeband;
 import utils.ConnectionHandler;
 
-
+/**
+ * This Servlet is called when a Doctor inserts a Timeband in a given day
+ * 
+ * 
+ * @author Diego Torlone
+ *
+ */
 @WebServlet("/MakeTimeband")
 public class MakeTimeband extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
-	
 
-	
+
+	/**
+	 * Initialise connection to the database
+	 */
+	@Override
 	public void init(){
-		connection = new ConnectionHandler(getServletContext()).getConnection();		
+		connection = new ConnectionHandler(getServletContext()).getConnection();
 	}
 
-	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
-		
-		Doctor medico = (Doctor) request.getSession().getAttribute("medico");	
-		
-		
-		Timeband temporaryTimeband = (Timeband )request.getAttribute("temporaryTimeband");		
-		
+
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		//Retrieves doctor from the session
+		Doctor medico = (Doctor) request.getSession().getAttribute("medico");
+
+		//Retrieves the temporary Timeband object
+		Timeband temporaryTimeband = (Timeband )request.getAttribute("temporaryTimeband");
+
+		//Insert the timeband on the database
 		final TimebandDAO timebandDao = new TimebandDAO(connection);
-		
 		try {
 			timebandDao.insert(temporaryTimeband, medico);
 		} catch (DBException e) {
@@ -49,12 +58,13 @@ public class MakeTimeband extends HttpServlet {
 			response.sendError(400, e.getMessage());
 			return;
 		}
-		
-		String data = temporaryTimeband.getInizio().toLocalDate().toString(); 
-		String path = this.getServletContext().getContextPath() + "/GestioneAgenda?data="+data;;
-		response.sendRedirect(path); 
+
+		//Redirect to Doctor's Agenda Management
+		String data = temporaryTimeband.getInizio().toLocalDate().toString();
+		String path = this.getServletContext().getContextPath() + "/GestioneAgenda?data="+data;
+		response.sendRedirect(path);
 		return;
-		
+
 	}
 
 }

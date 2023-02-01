@@ -2,119 +2,101 @@ package controllers;
 
 import java.io.IOException;
 import java.sql.Connection;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import DAO.NotificationDAO;
 import DAO.TimebandDAO;
+import beans.Appointment;
 import beans.Doctor;
+import beans.Notification;
+import beans.Timeband;
 import exceptions.DBException;
-import schedule.Appointment;
-import schedule.Timeband;
+import exceptions.InsertionException;
 import utils.ConnectionHandler;
 
 /**
- * Servlet implementation class DeleteTimeband
+ * This Servlet is called when a Doctor deletes a Timeband
+ * @author diego
+ *
  */
 @WebServlet("/DeleteTimeband")
 public class DeleteTimeband extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
 
-	public void init(){
-		connection = new ConnectionHandler(getServletContext()).getConnection();		
+	/**
+	 * Initialises connection to the database
+	 */
+	@Override
+	public void init() {
+		connection = new ConnectionHandler(getServletContext()).getConnection();
 	}
-	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		//Manca la guardia
 
-//		Doctor medico = (Doctor) request.getSession().getAttribute("medico");
-//				
-//		
-//		//Processo parametri
-//		int timebandId;		
-//		try {
-//			timebandId = Integer.parseInt((String) request.getParameter("timebandId"));
-//		}catch(Exception e) {
-//			e.printStackTrace();
-//			response.getWriter().print("Parametri non validi");
-//			return;
-//		}
-//		
-//		if(timebandId<1) {
-//			response.getWriter().print("Parametri non validi - minore di 1");
-//			return;
-//		}
-//		
-//		//Controllo che la fascia appartenga al dottore e che non sia nel passato
-//		
-//		TimebandDAO timebandDao = new TimebandDAO(connection);
-//		
-//		Timeband timeband;
-//		try {
-//			timeband = timebandDao.get(timebandId);
-//		} catch (DBException e) {
-//			response.sendError(500, "Errore nel database");
-//			return;
-//		}
-//		
-//		if(timeband == null) {
-//			response.getWriter().print("Fascia oraria non esistente");
-//			return;
-//		}
-//		
-//		if(timeband.getMedico().getId() != medico.getId()) {			
-//			response.getWriter().print("La fascia temporale non appartiene al medico richiedente");
-//			return;
-//		}
-//		
-//		if(timeband.getInizio().isBefore(LocalDateTime.now())) {
-//			response.getWriter().print("Non si può eliminare una fascia oraria nel passato");
-//			return;
-//		}
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		
-		Doctor medico = (Doctor) request.getSession().getAttribute("medico");
+		//Retrieves Doctor from session
+		Doctor doctor = (Doctor) request.getSession().getAttribute("medico");
+		
+		//Retrieves Timeband to be deleted
 		Timeband timeband = (Timeband) request.getAttribute("timeband");
-		
+
+		//Delete the timeband
 		try {
 			new TimebandDAO(connection).delete(timeband);
 		} catch (DBException e) {
 			response.sendError(500, "Errore database");
 			return;
 		}
-		
-		
-		
-				
-		
-		//Avvisa tutti gli interessati
-		for(Appointment appointment: timeband.getAppuntamenti()) {
-			appointment.getPaziente().setConnection(connection);
-			try {
-				appointment.getPaziente().update("Il tuo appuntamento con " + medico.getUsername() + " del " + appointment.getInizio().toLocalDate() + " alle " + appointment.getInizio().toLocalTime() + " è stato cancellato. Contatta il tuo medico per ulteriori dettagli");
-			} catch (DBException e) {
-				System.err.println(e.getMessage() + "\n " + e.getLocalizedMessage());
-				break;
-			}
-		}
+
+
+
+		/*
+		 * Send a notification to *each* patient whose appointments have been cancelled
+		 */
+
+		for(Appointment appointment : timeband.getAppuntamenti()) {
 			
-		timeband.getMedico().setConnection(connection);
-		try {
-			timeband.getMedico().update("Hai eliminato la fascia temporale del "+ timeband.getInizio().toLocalDate() + " dalle " + timeband.getInizio().toLocalTime() + " alle " + timeband.getFine().toLocalTime() +". Cancellando " + timeband.getAppuntamenti().size() + " appuntamenti");
-		} catch (DBException e) {
-			System.err.println(e.getMessage() + "\n " + e.getLocalizedMessage());
-		} 
-		
-		String data = timeband.getInizio().toLocalDate().toString(); 
-		String path = this.getServletContext().getContextPath() + "/GestioneAgenda?data="+data;;
+			//Prepare the message	
+			String notificationText = doctor.getDoctorDetails().getName() + " ha cancellato l'appuntamento di "
+					+ appointment.getFormattedDate() + " alle " + appointment.getFormattedStartTime() + ". Contattalo al "
+					+ doctor.getDoctorDetails().getPhone() + " per ulteriori dettagli.";
+
+			
+			Notification notification = new Notification(notificationText);
+
+			try {
+				//Send the message
+				new NotificationDAO(connection).insert(notification, appointment.getPaziente());
+			} catch (DBException e) {
+				response.sendError(500, "Errore database");
+				return;
+			} catch (InsertionException e) {
+				response.sendError(500, "Impossibile inserire notifica");
+				return;
+			}
+
+		}
+
+
+
+		/*
+		 * Redirect to Agenda management
+		 */
+
+		String data = timeband.getInizio().toLocalDate().toString();
+		String path = this.getServletContext().getContextPath() + "/GestioneAgenda?data=" + data;
+
 		response.sendRedirect(path);
-		
+
 		return;
-		
-		
+
 	}
 
 }

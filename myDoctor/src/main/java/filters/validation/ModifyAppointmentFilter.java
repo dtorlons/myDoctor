@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -17,37 +16,59 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import DAO.AppointmentDAO;
+import beans.Appointment;
 import beans.Patient;
 import exceptions.DBException;
-import schedule.Appointment;
 import utils.ConnectionHandler;
 import utils.Toolkit;
 
 /**
- * Servlet Filter implementation class ModifyAppointmentFilter
+ * Performs a validation task before the request is processed by the servlet.
+ *
+ * The method checks if the user making the request is authorized to <u>modify
+ * the appointment </u> and correct parameters were provided in the request.
+ *
+ * <p>
+ * Responds with the following HTTP Status codes:
+ * <li><b>400 - Bad request </b> If the parameters provided are incorrect
+ * <li><b>403 - Forbidden </b> If the requesting user has no privileges over the
+ * operation
+ * <li><b>500 - Internal Server Error </b> Should the database interaction fail
+ * </p>
+ * <br>
+ *
+ * @author Diego Torlone
+ *
  */
 @WebFilter("/ModifyAppointment")
 public class ModifyAppointmentFilter extends HttpFilter implements Filter {
+	private static final long serialVersionUID = 1L;
 	private Connection connection;
 
+	/**
+	 * Initializes the connection handler to establish a connection with the
+	 * database
+	 */
+	@Override
 	public void init() {
 		connection = new ConnectionHandler(getServletContext()).getConnection();
 	}
 
+	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
+		/*
+		 * cast the ServletRequest to an HttpServletRequest and ServletResponse to an
+		 * HttpServletResponse to access the session data.
+		 */
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
-		HttpSession session = httpRequest.getSession();
-
 		List<Patient> pazienti = (List<Patient>) httpRequest.getSession().getAttribute("pazienti");
 
-		// ottengo e controllo parametri
-
+		// retrieve the appointmentId from the request parameters,
 		int appointmentId = -1;
 		LocalDate date = null;
 		LocalTime begin = null;
@@ -58,21 +79,21 @@ public class ModifyAppointmentFilter extends HttpFilter implements Filter {
 			begin = LocalTime.parse(request.getParameter("inizio"));
 			end = LocalTime.parse(request.getParameter("fine"));
 		} catch (Exception e) {
-			response.getWriter().println("Errore nei parametri");
+			httpResponse.sendError(400, "Errore nei parametri");
 			return;
 		}
 
+		// Validation of the parameters
 		if (appointmentId < 1 || date == null || begin == null || end == null) {
-			response.getWriter().println("Parametri vuoti presenti");
+			httpResponse.sendError(400, "Parametri vuoti presenti");
 			return;
 		}
-
 		if (date.isBefore(LocalDate.now()) || begin.isAfter(end)) {
-			response.getWriter().println("Non si può modificare un appuntamento nel passato");
+			httpResponse.sendError(400, "Non si può modificare un appuntamento nel passato");
 			return;
 		}
 
-		// Prendo l'appuntamento originale
+		// Retreives original appointment and checks for existence
 		Appointment appointment;
 		try {
 			appointment = new AppointmentDAO(connection).get(appointmentId);
@@ -80,30 +101,26 @@ public class ModifyAppointmentFilter extends HttpFilter implements Filter {
 			httpResponse.sendError(500, "Errore database");
 			return;
 		}
-
 		if (appointment == null) {
 			httpResponse.sendError(400, "L'appuntamento che si desidera modificare non esiste");
 			return;
 		}
 
-		// Verifico se il paziente è nella lista
+		// Verifies privileges
 
 		Patient patient = Toolkit.findPatientById(pazienti, appointment.getPaziente().getId());
 
 		if (patient == null) {
-			httpResponse.sendError(400, "Il paziente non è tra i tuoi assistiti");
+			httpResponse.sendError(403, "Il paziente non è tra i tuoi assistiti");
 			return;
 		}
 
-		// Gli cambio le ore
+		// Modifies the original appointment
 		appointment.setInizio(LocalDateTime.of(date, begin));
 		appointment.setFine(LocalDateTime.of(date, end));
-		
-		
-		
+
+		// pass the request to the Servlet
 		httpRequest.setAttribute("appointment", appointment);
-		
-		
 
 		chain.doFilter(request, response);
 	}

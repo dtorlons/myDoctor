@@ -1,10 +1,9 @@
-package schedule;
+package beans;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import beans.Patient;
 
 /**
-  * This can be thought of as the formal arrangement in which Doctor and Patient meet  at a particular time. 
+  * This can be thought of as the formal arrangement in which Doctor and Patient meet  at a particular time.
  *
  */
 public class Appointment {
@@ -13,12 +12,12 @@ public class Appointment {
 	private int disponibilitàId;
 	private LocalDateTime inizio;
 	private LocalDateTime fine;
-	private PatientObserver paziente;	
-	private String note;	
-	
+	private Patient paziente;
+	private String note;
+
 	/**
 	 * Creates an instance of Appointment with the specified arguments.
-	 * 
+	 *
 	 * @param id Unique identifier
 	 * @param timebandId  The Timeband is referred to
 	 * @param start A LocalDateTime object indicating the starting time of the Appointment
@@ -26,29 +25,29 @@ public class Appointment {
 	 * @param patient A Patient object linked to the Appointment
 	 * @param notes A String of text.
 	 */
-	public Appointment(int id, int disponibilitàId, LocalDateTime inizio, LocalDateTime fine, Patient paziente, String note) {		
+	public Appointment(int id, int disponibilitàId, LocalDateTime inizio, LocalDateTime fine, Patient paziente, String note) {
 		this.id = id;
 		this.disponibilitàId = disponibilitàId;
 		this.inizio = inizio;
 		this.fine = fine;
-		this.paziente = new PatientObserver(paziente);	
+		this.paziente = paziente;
 	}
-	
+
 	/**
 	 * Creates an instance of Appointment with the specified arguments.
-	 *  
+	 *
 	 * @param timebandId  The Timeband is referred to
 	 * @param start A LocalDateTime object indicating the starting time of the Appointment
 	 * @param end A LocalDateTime object indicating the ending time of the Appointment
 	 * @param patient A Patient object linked to the Appointment
 	 * @param notes A String of text.
 	 */
-	public Appointment(int disponibilitàId, LocalDateTime inizio, LocalDateTime fine, Patient paziente, String note) {				
+	public Appointment(int disponibilitàId, LocalDateTime inizio, LocalDateTime fine, Patient paziente, String note) {
 		this.disponibilitàId = disponibilitàId;
 		this.inizio = inizio;
 		this.fine = fine;
-		this.paziente = new PatientObserver(paziente); //TODO: Rivedi questa cosa del polimorfismo 
-		this.note = note;		
+		this.paziente = paziente;
+		this.note = note;
 	}
 	/**
 	 * TODO: Fare questo costruttore
@@ -57,28 +56,28 @@ public class Appointment {
 	 * @param fine
 	 * @param note
 	 */
-	public Appointment(int disponibilitàId, LocalDateTime inizio, LocalDateTime fine, String note) {				
+	public Appointment(int disponibilitàId, LocalDateTime inizio, LocalDateTime fine, String note) {
 		this.disponibilitàId = disponibilitàId;
 		this.inizio = inizio;
-		this.fine = fine;		
-		this.note = note;		
+		this.fine = fine;
+		this.note = note;
 	}
-	
+
 	/*
 	 * Getters & Setters
 	 */
-	
-	public PatientObserver getPaziente() {		
+
+	public Patient getPaziente() {
 		return this.paziente;
 	}
-	
+
 	public String getFormattedTimeband() {
-		return inizio.format(DateTimeFormatter.ofPattern("HH:mm")) + " - " + fine.format(DateTimeFormatter.ofPattern("HH:mm"));		
+		return inizio.format(DateTimeFormatter.ofPattern("HH:mm")) + " - " + fine.format(DateTimeFormatter.ofPattern("HH:mm"));
 	}
-		
+
 	public int getId() {
 		return id;
-	}	
+	}
 
 	public int getDisponibilitàId() {
 		return disponibilitàId;
@@ -87,36 +86,36 @@ public class Appointment {
 	public LocalDateTime getInizio() {
 		return inizio;
 	}
-	
+
 	public String getFormattedStartTime() {
 		return inizio.toLocalTime().toString();
 	}
-	
+
 	public String getFormattedEndTime() {
 		return fine.toLocalTime().toString();
 	}
-	
+
 	public String getFormattedDate() {
 		return inizio.toLocalDate().format(DateTimeFormatter.ofPattern("E dd/MM/yy"));
 	}
-	
+
 	public String getDate() {
 		return inizio.toLocalDate().toString();
-		
+
 	}
 
 	public LocalDateTime getFine() {
 		return fine;
-	}	
+	}
 
 	public String getNote() {
 		return note;
 	}
-	
+
 	public void setInizio(LocalDateTime inizio) {
 		this.inizio = inizio;
 	}
-	
+
 	public void setFine(LocalDateTime fine) {
 		this.fine = fine;
 	}
@@ -126,15 +125,6 @@ public class Appointment {
 		return "Appointment [id=" + id + ", disponibilitàId=" + disponibilitàId + ", inizio=" + inizio + ", fine="
 				+ fine + ", paziente=" + paziente + ", note=" + note + "]";
 	}
-	
 
-	
 
-	
-	
-	
-	
-	
-	
-	
 }

@@ -1,13 +1,26 @@
 package beans;
 
+/**
+ * PatientDetails contains contact information about the {@link Patient}
+ * 
+ */
 public class PatientDetails {
-	
+
 	private int id;
 	private int patientId;
 	private String name;
 	private String address;
 	private String phone;
-	
+
+	/**
+	 * Constructs a PatientDetails object.
+	 * 
+	 * @param id the id of the database record
+	 * @param patientId the id of the patient
+	 * @param name the name of the patient
+	 * @param address the address of the patient
+	 * @param phone the phone number of the patient
+	 */
 	public PatientDetails(int id, int patientId, String name, String address, String phone) {
 		super();
 		this.id = id;
@@ -17,6 +30,9 @@ public class PatientDetails {
 		this.phone = phone;
 	}
 
+	/*
+	 * Getters & Setters
+	 */
 	public int getId() {
 		return id;
 	}
@@ -56,10 +72,10 @@ public class PatientDetails {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 
 }

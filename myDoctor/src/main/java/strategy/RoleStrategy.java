@@ -17,29 +17,114 @@ import beans.Message;
 import beans.Notification;
 import exceptions.DBException;
 
+/**
+ * 
+ * The RoleStrategy interface defines the behavior of various role strategies.
+ * <p>
+ * This interface is used as a part of the <b><u>Strategy design pattern.</u></b> Each role
+ * strategy defines the <i>Home</i> context and template path as well as the
+ * <i>Chatroom</i> context and template path, the functionality to get and post
+ * <i>Messages</i> and <i>Notifications</i>, and get an <i>Archive</i>
+ * (Attachment) for a specific role.
+ * </p>
+ * 
+ * @author Diego Torlone
+ * 
+ */
+
 public interface RoleStrategy {
 
-	WebContext getHomeContext(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws DBException;
+	/**
+	 * 
+	 * Returns the home context for a specific role.
+	 * 
+	 * @param request        an {@link HttpServletRequest}
+	 * @param response       an {@link HttpServletResponse}
+	 * @param servletContext an {@link ServletContext}
+	 * @return the Home context for a specific role
+	 * @throws DBException if there is a database error
+	 */
+	WebContext getHomeContext(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
+			throws DBException;
+
+	/**
+	 * 
+	 * Returns the Home template path for a specific role.
+	 * 
+	 * @return the home template path for a specific role
+	 */
 	String getHomeTemplate();
-	
-	
-	
-	WebContext getChatroomContext(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext);
+
+	/**
+	 * 
+	 * Returns the Chatroom context for a specific role.
+	 * 
+	 * @param request        an {@link HttpServletRequest}
+	 * @param response       an {@link HttpServletResponse}
+	 * @param servletContext an {@link ServletContext}
+	 * @return the Chatroom context for a specific role
+	 */
+	WebContext getChatroomContext(HttpServletRequest request, HttpServletResponse response,
+			ServletContext servletContext);
+
+	/**
+	 * 
+	 * Returns the Chatroom template path for a specific role.
+	 * 
+	 * @return the chatroom template path for a specific role
+	 */
 	String getChatroomTemplate();
-	
-	
-	
+
+	/**
+	 * 
+	 * Returns the list of {@link Notification} for a specific role.
+	 * 
+	 * @param request the {@link HttpServletRequest} object
+	 * @return the list of notifications for a given role
+	 * @throws DBException if there is a database error
+	 */
 	List<Notification> getNotifications(HttpServletRequest request) throws DBException;
+
+	/**
+	 * 
+	 * Deletes all {@link Notification} of a given {@link User} for a specific role.
+	 * 
+	 * @param request the {@link HttpServletRequest}
+	 * @throws DBException if there is a database error
+	 */
 	void deleteAllNotifications(HttpServletRequest request) throws DBException;
-	
-	
-	
-	public List<Message> getChatMessages (HttpServletRequest request) throws DBException;
-	void postChatMessage(HttpServletRequest request) throws IOException, ServletException, SerialException, SQLException, DBException;
-	
-	
-	public Archive getArchive(HttpServletRequest request) throws DBException, IOException;
-	
-	
-	
+
+	/**
+	 * 
+	 * Returns the list of {@link Message} for a specific role.
+	 * 
+	 * @param request the {@link HttpServletRequest}
+	 * @return the list of messages for a specific role
+	 * @throws DBException if there is a database error
+	 * @throws Exception if a generic error occurs
+	 */
+	public List<Message> getChatMessages(HttpServletRequest request) throws DBException, Exception;
+
+	/**
+	 * 
+	 * Posts a {@link Message} for a specific role.
+	 * 
+	 * @param request the {@link HttpServletRequest} 
+	 * @throws IOException      if there is an I/O error
+	 * @throws ServletException if there is a Servlet error
+	 * @throws SerialException  if there is a serialization error
+	 */
+	void postChatMessage(HttpServletRequest request)
+			throws IOException, ServletException, SerialException, SQLException, DBException;
+
+	/**
+	 * Returns an {@link Archive} (filename, Blob) following a request sent to {@link GetFile}.
+	 * @param request the {@link HttpServletRequest} 
+	 * @return an {@link Archive} ready to be sent over an {@link OutputStream}
+	 * @throws DBException if there is a database error
+	 * @throws IOException if I/O operation fails
+	 * @throws Exception if a generic error occurs
+	 */
+	public Archive getArchive(HttpServletRequest request) throws DBException, IOException, Exception;
+
 }

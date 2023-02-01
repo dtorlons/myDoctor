@@ -2,14 +2,20 @@ package beans;
 
 import java.sql.Timestamp;
 
+/**
+ * This class represents a notification.
+ */
 public class Notification {
-	
+
 	private int idNotifica;
 	private String username;
 	private String text;
 	private Timestamp timestamp;
-	
-	
+
+
+	/*
+	 * Constructor for existing notification
+	 */
 	public Notification(int idNotifica, String username, String text, Timestamp timestamp) {
 		super();
 		this.idNotifica = idNotifica;
@@ -19,11 +25,11 @@ public class Notification {
 	}
 
 
-	public Notification(String username, String text, Timestamp timestamp) {
-		super();
-		this.username = username;
+	/*
+	 * Constructor for new notification
+	 */
+	public Notification(String text) {
 		this.text = text;
-		this.timestamp = timestamp;
 	}
 
 
@@ -31,6 +37,9 @@ public class Notification {
 		return idNotifica;
 	}
 
+	/*
+	 * Getters & Setters
+	 */
 
 	public String getUsername() {
 		return username;
@@ -65,12 +74,12 @@ public class Notification {
 	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 
 }

@@ -1,18 +1,45 @@
 package beans;
 
+/**
+ * 
+ * <p>
+ * The Doctor class extends the {@link User} class and represents a doctor in the
+ * system.
+ * </p>
+ * 
+ * @author Diego Torlone
+ * 
+ * @see User
+ */
 public class Patient extends User{
 
 
-	private int idMedico;	
+	private int idMedico;
 	private PatientDetails patientDetails;
-	
+
+	/**
+	 * 
+	 * <p>
+	 * The constructor creates a new Patient instance with the given id, username,
+	 * password, and DoctorDetails.
+	 * </p>
+	 * 
+	 * @param id            The id of the doctor
+	 * @param username      The username of the doctor
+	 * @param idMedico		The Id of the doctor associated with the patient
+	 * @param password      The password of the doctor
+	 * @param patientDetails The details for the patient
+	 */
 	public Patient(int id, String username, int idMedico, String password, PatientDetails patientDetails) {
-		super(id, username, password);		
+		super(id, username, password);
 		this.idMedico = idMedico;
 		this.patientDetails = patientDetails;
 	}
-		
 
+
+	/*
+	 * Getters & Setters
+	 */
 	public PatientDetails getPatientDetails() {
 		return patientDetails;
 	}
@@ -23,6 +50,7 @@ public class Patient extends User{
 	}
 
 
+	@Override
 	public int getId() {
 		return id;
 	}
@@ -39,6 +67,7 @@ public class Patient extends User{
 		return password;
 	}
 
+	@Override
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -55,6 +84,6 @@ public class Patient extends User{
 		this.password = password;
 	}
 
-	
-	
+
+
 }

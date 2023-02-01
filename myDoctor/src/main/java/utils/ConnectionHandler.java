@@ -3,12 +3,24 @@ package utils;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
 import javax.servlet.ServletContext;
 
 /**
- * 
- * @author diego
+ * <p>This is the constructor for the database connection handler</p>
+ * This implementation works only upon a Java Servlet context and uses only one connection to the database.
+ * <br>
+ * <p><b>Requires some initial parameters specified web.xml:</b> </p>
+ * <i> 	dbDriver: the database connector <br>
+ * 		dbUrl: the url for the database <br>
+ * 		dbUser: user for logging into the database <br>
+ * 		dbPassword: the password associated to the user
+ * </i>  <br>
  *
+ * @param context The Servlet Context from which retreive the above parameters
+ * @see https://www.mysql.com/products/connector/
+ * 
+ * @author Diego Torlone
  */
 public class ConnectionHandler {
 
@@ -19,24 +31,15 @@ public class ConnectionHandler {
 	private String password = null;
 
 	/**
-	 * <p>This is the constructor for the database connection handler</p>
-	 * This implementation works only upon a Java Servlet context and uses only one connection to the database.
-	 * <br>
-	 * <p><b>Requires some initial parameters specified web.xml:</b> </p>
-	 * <i> 	dbDriver: the database connector <br>
-	 * 		dbUrl: the url for the database <br>
-	 * 		dbUser: user for logging into the database <br>
-	 * 		dbPassword: the password associated to the user
-	 * </i>  <br>
-	 * 
-	 * @param context The Servlet Context from which retreive the above parameters
-	 * @see https://www.mysql.com/products/connector/
+	 * Constructor for a Connection Handler
+	 *
+	 * @param servletContext - a {@link ServletContext} to retreive the connection parameters from
 	 */
-	public ConnectionHandler(ServletContext ctx) {
-		this.driver = ctx.getInitParameter("dbDriver");
-		this.url = ctx.getInitParameter("dbUrl");
-		this.user = ctx.getInitParameter("dbUser");
-		this.password = ctx.getInitParameter("dbPassword");
+	public ConnectionHandler(ServletContext servletContext) {
+		this.driver = servletContext.getInitParameter("dbDriver");
+		this.url = servletContext.getInitParameter("dbUrl");
+		this.user = servletContext.getInitParameter("dbUser");
+		this.password = servletContext.getInitParameter("dbPassword");
 
 		//Loads the database connector driver and establishes a connection
 		if (paramsCorrect()) {
@@ -71,8 +74,8 @@ public class ConnectionHandler {
 	}
 
 	/**
-	 * Return a session to the database if successful
-	 * 
+	 * Returns a session to the database if present, <i>null</i> otherwise
+	 *
 	 * @return A JDBC connection to the database if existing. Returns null and prints an error message to the console otherwise
 	 */
 	public Connection getConnection() {
@@ -85,7 +88,7 @@ public class ConnectionHandler {
 		return null;
 
 	}
-	
+
 	/**
 	 * 	Disposes of the connection to the database
 	 */

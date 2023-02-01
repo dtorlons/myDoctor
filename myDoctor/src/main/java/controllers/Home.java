@@ -2,7 +2,6 @@ package controllers;
 
 import java.io.IOException;
 
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,40 +16,51 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import exceptions.DBException;
 import strategy.RoleStrategy;
 
-
 /**
- * Servlet implementation class Home
+ * This Servlet is called when the Home Page is requested. It produces the View for the user
+ *
+ * * <p>This Servlet uses the Strategy design pattern </p>
+ * @author Diego Torlone
+ *
  */
 @WebServlet("/Home")
 public class Home extends HttpServlet {
-	private static final long serialVersionUID = 1L;	
+	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
 
-	public void init() {		
-		ServletContext servletContext = getServletContext();		
+	/**
+	 * Initializes Template engine
+	 */
+	@Override
+	public void init() {
+		ServletContext servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
-		this.templateEngine = new TemplateEngine();  
+		this.templateEngine = new TemplateEngine();
 		this.templateEngine.setTemplateResolver(templateResolver);
-		templateResolver.setSuffix(".html");  
+		templateResolver.setSuffix(".html");
 	}
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-				
+
+		//Retrieves strategy from session
 		RoleStrategy strategy = (RoleStrategy) request.getSession().getAttribute("roleStrategy");
-		
+
+		//Process the template following the strategy given
 		try {
-			templateEngine.process(	strategy.getHomeTemplate(), 
-									strategy.getHomeContext(request, response, getServletContext()), 
+			templateEngine.process(	strategy.getHomeTemplate(),
+									strategy.getHomeContext(request, response, getServletContext()),
 									response.getWriter());
-			
+
+		//Handle exceptions
 		} catch (DBException e) {
 			response.sendError(500, "Errore database");
 			return;
-		} 
-		
-		
+		}
+
+				
 		return;
 	}
 

@@ -7,23 +7,30 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import beans.Appointment;
 import beans.Doctor;
 import beans.Patient;
 import exceptions.DBException;
-import exceptions.InsertionException;
-import exceptions.UpdateException;
 
 /**
- * An implementation of the interface {@link DAO} Specific for the entity
- * Patient
+ * An implementation of the interface {@link DAO} allowing to interact with the
+ * <i>{@link Patient}</i> entity on the database
+ *
+ * <p>
+ * It provides methods to perform CRUD (Create, Read, Update, Delete) operations
+ * on the patient table in the database.
+ * </p>
+ *
+ * @author Diego Torlone
+ *
  */
 public class PatientDAO implements DAO<Patient, Doctor>{
 
 	private final Connection connection;
-	
+
 	/**
-	 * Data Access Object to interact with the 'Patient' entity on the database.
-	 * 
+	 * Data Access Object to interact with the '{@link Patient}' entity on the database.
+	 *
 	 * @param connection A connection (session) with a database
 	 */
 	public PatientDAO(Connection connection) {
@@ -31,70 +38,83 @@ public class PatientDAO implements DAO<Patient, Doctor>{
 	}
 
 	/**
-	 * Returns a Patient object corresponding to the identifier in the
-	 * parameter
-	 * 
-	 * @return A Patient with a specific id
+	 * Returns a {@link Patient} object that corresponds to a given ID from the
+	 * database.
+	 *
+	 * @param patientId - The identifier of the {@link Patient} to be fetched
+	 * @return The {@link Patient} matching the given ID if it exists, <i>null</i> otherwise.
 	 * @throws DBException if the session with the database fails
 	 */
-	public Patient get(int pazienteId) throws DBException {
-		
+	@Override
+	public Patient get(int patientId) throws DBException {
+
 		//Prepare the query
 		String query = "select idPaziente, idMedico, paziente.username, user.password from paziente join user on (paziente.username = user.username) where idPaziente = ?";
-		
+
 		PreparedStatement ps = null;
-		
+
 		//Set all the parameters in the query
 		try {
 			ps = connection.prepareStatement(query);
-			ps.setInt(1, pazienteId);
+			ps.setInt(1, patientId);
 			System.out.println(ps.toString());
 		} catch (SQLException e) {
 			throw new DBException(e);
 		}
-		
-		// Launch the query, obtain a value and close the resources
+
+		// Launch the query and obtain a value
 		ResultSet result = null;
 		Patient paziente = null;
 		try {
 			result = ps.executeQuery();
-		
+
 			while(result.next()) {
-				paziente = new Patient(result.getInt("idPaziente"), 
-										result.getString("username"), 
-										result.getInt("idMedico"), 
+				paziente = new Patient(result.getInt("idPaziente"),
+										result.getString("username"),
+										result.getInt("idMedico"),
 										result.getString("password"),
 										new PatientDetailsDAO(connection).get(result.getInt("idPaziente"))
 						);
 			}
 		} catch (SQLException e) {
 			throw new DBException(e);
-		}finally {
-		
+		}
+
+		//Disposal of the resources
+		finally {
+
 		try {
 			result.close();
 			ps.close();
 		} catch (SQLException e) {
 			throw new DBException(e);
 		}}
-		
+
 		/*
 		 * Return a Patient
 		 */
-		
+
 		return paziente;
-		
-		
+
+
 	}
-	
+
+	/**
+	 *
+	 * Check credentials of a {@link Patient}
+	 *
+	 * @param username a <i>String </i> specifying the patient's username
+	 * @param password a <i>String </i> specifying the patient's password
+	 * @return the {@link Patient} object with the matching credentials
+	 * @throws DBException if the session with the database fails
+	 */
 	public Patient chechCredentials(String username, String password) throws DBException {
-		
-		//String query = "select * from paziente where username = ? and password = ?";
-		
+
+		//Prepare the query
 		String query = "select idPaziente, user.username, idMedico, password from user join paziente on user.username = paziente.username where user.username = ? AND user.password = ?";
-		
+
+		//Set all the query values
 		PreparedStatement ps = null;
-		
 		try {
 			ps = connection.prepareStatement(query);
 			ps.setString(1, username);
@@ -102,21 +122,25 @@ public class PatientDAO implements DAO<Patient, Doctor>{
 		} catch (SQLException e) {
 			throw new DBException(e);
 		}
-		
+
+		//Executes the query and fetches the result
 		ResultSet result = null;
 		Patient patient = null;
 		try {
 			result = ps.executeQuery();
 			while(result.next()) {
-				patient = new Patient(result.getInt("idPaziente"), 
-						result.getString("username"), 
-						result.getInt("idMedico"), 
+				patient = new Patient(result.getInt("idPaziente"),
+						result.getString("username"),
+						result.getInt("idMedico"),
 						result.getString("password"),
 						new PatientDetailsDAO(connection).get(result.getInt("idPaziente")));
 			}
 		} catch (SQLException e) {
 			throw new DBException(e);
-		}finally {
+		}
+
+		//Disposal of resources
+		finally {
 			try {
 				ps.close();
 				result.close();
@@ -124,41 +148,42 @@ public class PatientDAO implements DAO<Patient, Doctor>{
 				throw new DBException(e);
 			}
 		}
-		
+
+		/*
+		 * Return the requested patient
+		 */
 		return patient;
 	}
-	
+
 	/**
-	 * Returns a List of Patients associated to a Doctor
 	 * <p>
-	 * This method returns <i>null</i> if a DB access error occurs; returns the
-	 * requested list otherwise
+	 * Gets a list of all {@link Patient} for a specific {@link Doctor} .
 	 * </p>
-	 * 
-	 * @param Doctor the Doctor object the Patient in the returning list
-	 *                 refer to
-	 * @return a list of Appointments relative to the given timeband.
-	 * @throws DBException if the session with the database fails
-	 */	
+	 *
+	 * @param doctor The {@link Doctor} whose Patients are being retrieved.
+	 * @return A {@link ArrayList} of all {@link Patient} for the specified patient.
+	 * @throws DBException If the session with the database fails.
+	 */
+	@Override
 	public List<Patient> getAll(Doctor doctor) throws DBException {
 
 		//Prepare the query
 		String query = "select idPaziente, user.username, idMedico, password from paziente join user on user.username = paziente.username where idMedico = ?";
-		
+
 		PreparedStatement ps = null;
-		
+
 		try {
 			ps = connection.prepareStatement(query);
-			ps.setInt(1, doctor.getId());			
+			ps.setInt(1, doctor.getId());
 		} catch (SQLException e) {
 			throw new DBException(e);
 		}
-		
-		ResultSet result = null;		
+
+		ResultSet result = null;
 		List<Patient> patients = new ArrayList<>();
-		
+
 		//Launch the query, obtain the results, close the resources
-		try {	
+		try {
 			result = ps.executeQuery();
 			while(result.next()) {
 				patients.add(new Patient(	result.getInt("idPaziente"),
@@ -170,7 +195,7 @@ public class PatientDAO implements DAO<Patient, Doctor>{
 		} catch (SQLException e) {
 			throw new DBException(e);
 		}finally {
-			
+
 			try {
 				result.close();
 				ps.close();
@@ -182,39 +207,45 @@ public class PatientDAO implements DAO<Patient, Doctor>{
 		 * Return a list of Patient
 		 */
 		return patients;
-		
+
 	}
 
 	/**
-	 * Not implemented 
+	 * Not implemented
 	 *
 	 *@deprecated
 	 * @throws UnsupportedOperationException always
-	 */	
-	public void insert(Patient item1, Doctor item2) throws DBException, InsertionException {
-		throw new UnsupportedOperationException();		
+	 */
+	@Deprecated
+	@Override
+	public void insert(Patient item1, Doctor item2) {
+		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * Not implemented 
+	 * Not implemented
 	 *
 	 *@deprecated
 	 * @throws UnsupportedOperationException always
-	 */	
-	public void update(Patient item) throws DBException, UpdateException {
-		throw new UnsupportedOperationException();		
+	 */
+	@Deprecated
+	@Override
+	public void update(Patient item)  {
+		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * Not implemented 
+	 * Not implemented
 	 *
 	 *@deprecated
 	 * @throws UnsupportedOperationException always
-	 */	
+	 */
+	@Deprecated
+	@Override
 	public void delete(Patient item) {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
-		
-	
+
+
 }

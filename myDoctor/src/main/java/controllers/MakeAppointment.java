@@ -1,10 +1,7 @@
- package controllers;
+package controllers;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,102 +10,48 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import DAO.AppointmentDAO;
-
-import DAO.PatientDAO;
-import DAO.TimebandDAO;
+import DAO.NotificationDAO;
+import beans.Appointment;
 import beans.Doctor;
-import beans.Patient;
+import beans.Notification;
+import beans.Timeband;
 import exceptions.DBException;
 import exceptions.InsertionException;
-import schedule.Appointment;
-import schedule.Timeband;
 import utils.ConnectionHandler;
 
+
 /**
- * Servlet implementation class MakeAppointment
+ * This Servlet is called when a Doctor inserts an appointment 
+ * @author diego
+ *
  */
 @WebServlet("/MakeAppointment")
 public class MakeAppointment extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
-	
-	public void init (){
-		connection = new ConnectionHandler(getServletContext()).getConnection();			
-	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * Initialise connection to the database
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	@Override
+	public void init() {
+		connection = new ConnectionHandler(getServletContext()).getConnection();
+	}
+
+
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		
-//		Doctor medico = (Doctor) request.getSession().getAttribute("medico");
-//		
-//		
-//		
-//		Integer disponibilitaId;
-//		LocalDate date;
-//		LocalDateTime inizio;
-//		LocalDateTime fine;
-//		Integer idPaziente;
-//		String note; 
-//
-//		try {
-//			disponibilitaId = Integer.parseInt(request.getParameter("disponibilitaId"));
-//			date = LocalDate.parse(request.getParameter("date"));
-//			inizio = LocalDateTime.of(date, LocalTime.parse(request.getParameter("inizio")));
-//			fine = LocalDateTime.of(date, LocalTime.parse(request.getParameter("fine")));
-//			idPaziente = Integer.parseInt(request.getParameter("idPaziente"));
-//			note = "" + request.getParameter("note");
-//		}catch(Exception e) {
-//			response.getWriter().println("Errore nei parametri in ingresso");
-//			e.printStackTrace();
-//			return;
-//		}			
-//	
-//		
-//		//Abbiamo già un metodo per questo, non dovrebbe essere necessario interrogare il db
-//		Patient paziente;
-//		try {
-//			paziente = new PatientDAO(connection).get(idPaziente);
-//		} catch (DBException e2) {
-//			response.sendError(500, "Errore database");
-//			return;
-//		}
-//		
-//		Appointment appointment = new Appointment(disponibilitaId, inizio, fine, paziente, note);
-//		Timeband timeband = null;
-//		
-//		
-//		try {
-//			timeband = new TimebandDAO(connection).get(disponibilitaId);
-//		} catch (DBException e1) {
-//			response.sendError(500, "Errore nel database");
-//			return;			
-//		}
-//		
-//		if(timeband.getMedico().getId() != medico.getId()) {
-//			response.sendError(403, "Non hai privilegi per effettuare questa operazione");
-//			return;
-//		}
-//		
-//		
-//		if(!appointment.getInizio().toLocalDate().equals(appointment.getFine().toLocalDate())) {
-//			response.getWriter().println("L'appuntamento deve essere nella stessa data");
-//			return;
-//		}
-//		
-//		if(appointment.getInizio().isBefore(LocalDateTime.now())) {
-//			response.getWriter().println("Non si può inserire un appuntamento prima di adesso");
-//			return;
-//		} 
-//		
-//		
+		//Retrieve session attributes
+		Doctor doctor = (Doctor) request.getSession().getAttribute("medico");
+		
+		//Retrieve appointment to be inserted and target timeband
 		Appointment appointment = (Appointment) request.getAttribute("appointment");
 		Timeband timeband = (Timeband) request.getAttribute("timeband");
+
 		
-		
-		
-		//Inserimento appuntamento 
+		//Insert appointment
 		try {
 			new AppointmentDAO(connection).insert(appointment, timeband);
 		} catch (DBException e) {
@@ -118,13 +61,38 @@ public class MakeAppointment extends HttpServlet {
 			response.sendError(400, e.getMessage());
 			return;
 		}
+
+
+		/*
+		 * Send a notification over to the Patient related to the appointment 
+		 */
+
+		String notificationText = doctor.getDoctorDetails().getName() + " ti ha dato un appuntamento per "
+				+ appointment.getFormattedDate() + " alle " + appointment.getFormattedStartTime() + ". Controlla la tua agenda per ulteriori dettagli";
+
 		
-		String data = appointment.getInizio().toLocalDate().toString(); 
-		String path = this.getServletContext().getContextPath() + "/GestioneAgenda?data="+data;;
-		response.sendRedirect(path); 
-		
+		Notification notification = new Notification(notificationText);
+
+		//Insert the notification
+		try {
+			new NotificationDAO(connection).insert(notification, appointment.getPaziente());
+		} catch (DBException e) {
+			response.sendError(500, "Errore database");
+			return;
+		} catch (InsertionException e) {
+			response.sendError(500, "Impossibile inserire notifica");
+			return;
+		}
+
+
+		//Redirect to Agenda Management
+		String data = appointment.getInizio().toLocalDate().toString();
+		String path = this.getServletContext().getContextPath() + "/GestioneAgenda?data=" + data;
+
+		response.sendRedirect(path);
+
 		return;
-		
+
 	}
 
 }

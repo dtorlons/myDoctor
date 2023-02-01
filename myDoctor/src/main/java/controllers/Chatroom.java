@@ -15,14 +15,20 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import strategy.RoleStrategy;
 
-/**
- * Servlet implementation class Chatroom
+
+/*
+ * This servlet is called by the user when requesting the Chatroom
+ * 
+ * <p>This Servlet uses the Strategy design pattern </p>
  */
 @WebServlet("/Chatroom")
 public class Chatroom extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
 
+	/**
+	 * Initialisees Template engine
+	 */
 	public void init() {
 
 		ServletContext servletContext = getServletContext();
@@ -36,8 +42,13 @@ public class Chatroom extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+		/*
+		 * Retrieve Strategy from session
+		 * @see RoleStrategy
+		 */
 		RoleStrategy strategy = (RoleStrategy) request.getSession().getAttribute("roleStrategy");		
 		
+		//Process template
 		templateEngine.process(	strategy.getChatroomTemplate(), 
 								strategy.getChatroomContext(request, response, getServletContext()), 
 								response.getWriter());

@@ -1,7 +1,6 @@
 package filters.authorisation;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -19,38 +18,56 @@ import beans.Patient;
 import strategy.RoleStrategy;
 
 /**
- * Servlet Filter implementation class PatientFilter
+ * 
+ * The PatientFilter class is a Servlet filter that is used to restrict access
+ * to certain URLs based on the role <b>Patient</b>
+ * 
+ * <p>
+ * If a user is not logged in, they will receive the error message <b>'403 -
+ * Forbidden'</b>
+ * </p>
+ * 
+ * @author Diego Torlone
+ * 
  */
-@WebFilter(urlPatterns = { 	"/Agenda", 
-							"/PickAppointment", 
-							"/CancelAppointment"})
+@WebFilter(urlPatterns = { "/Agenda", "/PickAppointment", "/CancelAppointment" })
 
 public class PatientFilter extends HttpFilter implements Filter {
-       
-   
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
+	/**
+	 * Overrides the doFilter method of the Filter interface to restrict access to
+	 * the specified URLs based on the user's role.
+	 */
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+
+		/*
+		 * Casts the ServletRequest to an HttpServletRequest and ServletResponse to an
+		 * HttpServletResponse to access the session data.
+		 */
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
-
 		HttpSession session = httpRequest.getSession();
-		
-		Patient patient = (Patient)httpRequest.getSession().getAttribute("patient");
-		Doctor doctor = (Doctor)httpRequest.getSession().getAttribute("medico");			
+
+		/*
+		 * Retrieves objects from the session.
+		 */
+		Patient patient = (Patient) httpRequest.getSession().getAttribute("patient");
+		Doctor doctor = (Doctor) httpRequest.getSession().getAttribute("medico");
 		RoleStrategy strategy = (RoleStrategy) session.getAttribute("roleStrategy");
 
+		//Evaluates if the user is a Patient 
 		boolean isPatient = !session.isNew() && doctor != null && patient != null && strategy != null;
-		
-		if(!isPatient) {
+
+		//If the user is not a Patient, the response is sent with a 403 error code and a message
+		if (!isPatient) {
 			httpResponse.sendError(403, "Il tuo ruolo non permette di eseguire questa operazione");
 			return;
 		}
-		
-		
-		// pass the request along the filter chain
+
+		//If the user is a Doctor, the request is passed along the filter chain
 		chain.doFilter(request, response);
 	}
-
-	
 
 }

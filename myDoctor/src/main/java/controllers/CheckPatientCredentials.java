@@ -17,70 +17,72 @@ import exceptions.DBException;
 import strategy.PatientStrategy;
 import utils.ConnectionHandler;
 
+
 /**
- * Servlet implementation class CheckPatientCredentials
+ * This Servlet is called when a Patient makes an attempt to log in providing 'username' and 'passord'
+ * 
+ * 
+ * @author Diego Torlone
+ *
  */
 @WebServlet("/CheckPatientCredentials")
 public class CheckPatientCredentials extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	static Connection connection;
 
+	/*
+	 * Initialises connection to the database
+	 */
+	@Override
 	public void init() {
 		connection = new ConnectionHandler(getServletContext()).getConnection();
 	}
-	
-       
-   
-	
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
+
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		//Kills session, if there is one alive
 		request.getSession().invalidate();
 
-		//controllo parametri
 		
+		//Retrieves input parameters
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		
+
+		//Fetches patient from database
 		Patient patient = null;
-		
 		try {
 			patient = new PatientDAO(connection).chechCredentials(username, password);
 		} catch (DBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			response.sendError(500, "Errore database");
+			return;
 		}
-		
+
+		//Validates patient
 		if(patient == null) {
 			response.sendError(400, "Utente non esistente");
 			return;
 		}
-		
-		
+
+		//Retrieves his doctor
 		Doctor doctor = null;
-		
 		try {
 			doctor = new DoctorDAO(connection).get(patient.getIdMedico());
 		} catch (DBException e) {
 			response.sendError(500, "Errore database");
 			return;
 		}
-		
-		
+
+
+		//Set session attributes
 		request.getSession().setAttribute("medico", doctor);
-		request.getSession().setAttribute("patient", patient);		
+		request.getSession().setAttribute("patient", patient);
 		request.getSession().setAttribute("roleStrategy", new PatientStrategy(connection));
-		
-		//DEPRECABILE
-		request.getSession().setAttribute("role", "patient"); //DEPRECABILE
-		
-		//REDIRECT TO HOME PAGE
-		
+
+		//redirect to home page 
 		response.sendRedirect("Home");
-		
+
 		return;
 	}
 

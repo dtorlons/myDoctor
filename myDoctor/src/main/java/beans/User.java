@@ -1,16 +1,24 @@
 package beans;
 
 /**
- * Interface for those beans that can be classified as Users
- * <p>Implemented by Doctor and Patient</p> 
+ * This class represents an user in the system
+ * <p>
+ * Implemented by {@link Doctor} and {@link Patient}
+ * </p>
  *
  */
 public class User {
 	protected int id;
-	protected String username; 
+	protected String username;
 	protected String password;
-	
-	
+
+	/**
+	 * Constructor for the user
+	 * 
+	 * @param id       Record identifier
+	 * @param username a <i>String </i> specifying the user's username
+	 * @param password a <i>String </i> specifying the user's password
+	 */
 	public User(int id, String username, String password) {
 		super();
 		this.id = id;
@@ -18,6 +26,13 @@ public class User {
 		this.password = password;
 	}
 
+	
+	/*
+	 * Getters and setters
+	 *  
+	 */
+	
+	
 	public int getId() {
 		return id;
 	}
@@ -46,13 +61,5 @@ public class User {
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + "]";
 	}
-	
-	
-	
-	
-		
-	
-	
-
 
 }

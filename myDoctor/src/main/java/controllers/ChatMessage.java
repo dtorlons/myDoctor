@@ -18,17 +18,31 @@ import beans.Message;
 import exceptions.DBException;
 import strategy.RoleStrategy;
 
+/**
+ * This Servlet implements the interface user for getting or posting chat messages.
+ * 
+ * <p>This class uses the Strategy Pattern </p>
+ * 
+ * @author Diego Torlone
+ *
+ */
 @WebServlet("/ChatMessage")
 @MultipartConfig
 public class ChatMessage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		/*
+		 * Retrieves the Strategy 
+		 * @see RoleStrategy 
+		 */
 		RoleStrategy strategy = (RoleStrategy) request.getSession().getAttribute("roleStrategy");
 		
 		
+		//Retrieve the messages and handle exceptions
 		List<Message> messages;
 		try {
 			messages = strategy.getChatMessages(request);
@@ -36,9 +50,13 @@ public class ChatMessage extends HttpServlet {
 			response.setStatus(500);
 			response.getWriter().print("Errore database");
 			return;			
+		} catch (Exception e) {
+			response.setStatus(400);
+			response.getWriter().print(e.getMessage());
+			return;
 		}
 
-		// Mandare json
+		//Send messages over as a JSON
 		Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy hh:mm").create();
 		String json = gson.toJson(messages);
 
@@ -55,14 +73,22 @@ public class ChatMessage extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+		/*
+		 * Retrieve user strategy
+		 * @see RoleStrategy
+		 */
 		RoleStrategy strategy = (RoleStrategy) request.getSession().getAttribute("roleStrategy");
 		
+		//Post message or handle exceptions
 		try {
 			strategy.postChatMessage(request);
-		} catch (IOException | ServletException | SQLException | DBException e) {
+		} catch (IOException | SQLException | DBException e) {
 			response.sendError(500);
 			response.getWriter().print("Errore interno, riprovare più tardi");
 			return;			
+		}catch(ServletException e1) {
+			response.sendError(400, e1.getMessage());
+			return;
 		}
 		
 		response.setStatus(200);

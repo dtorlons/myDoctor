@@ -20,27 +20,29 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import DAO.AppointmentDAO;
+import beans.Appointment;
+import beans.Day;
 import beans.Doctor;
 import beans.Patient;
 import exceptions.DBException;
-import schedule.Appointment;
-import schedule.Day;
 import utils.ConnectionHandler;
-
 /**
- * Servlet implementation class Agenda
+ * This Servlet is the implementation of the Patien's agenda. It produces the View for the user
+ *
+ * @author Diego Torlone
+ *
  */
+
 @WebServlet("/Agenda")
 public class Agenda extends HttpServlet {
 	private static final long serialVersionUID = 1L;	
 	private Connection connection;
-	private TemplateEngine templateEngine;
+	private TemplateEngine templateEngine;	
 
-	
-	public void destroy() {
-		// TODO Auto-generated method stub
-	}
 
+	/**
+	 * Initializes the connection and template engine variables.
+	 */
 	public void init() {
 		connection = new ConnectionHandler(getServletContext()).getConnection();		
 		ServletContext servletContext = getServletContext();		
@@ -49,18 +51,17 @@ public class Agenda extends HttpServlet {
 		this.templateEngine = new TemplateEngine();  
 		this.templateEngine.setTemplateResolver(templateResolver);
 		templateResolver.setSuffix(".html");        
-	}
-	       
+	}	       
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		Doctor doctor = (Doctor) request.getSession().getAttribute("medico");
 		Patient patient = (Patient)request.getSession().getAttribute("patient");
 		
-		List<Day> daysOfWeek = new ArrayList<>();
+		// Create a list of days for the week
+		List<Day> daysOfWeek = new ArrayList<>();		
 		
-		//Ottenimento dei parametri (Se dati)
-		
+		// Parse the "data" parameter and set the begin date to Monday
 		String data = request.getParameter("data");		
 		LocalDate beginDate;
 		try {
@@ -69,6 +70,7 @@ public class Agenda extends HttpServlet {
 			beginDate = LocalDate.now().with(DayOfWeek.MONDAY);
 		}	
 		
+		// Create a Day for each day of the week
 		for(int i = 0; i<7; i++) {		
 			try {
 				daysOfWeek.add(new Day(beginDate.plusDays(i), doctor, connection));
@@ -78,6 +80,7 @@ public class Agenda extends HttpServlet {
 			}	  
 		}	
 		
+		// Obtain the list of appointments
 		List<Appointment> appointments;
 		
 		try {
@@ -87,7 +90,7 @@ public class Agenda extends HttpServlet {
 			return;
 		}
 		
-		
+		//Set template engine variables and process
 		String path = "/WEB-INF/Agenda.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());		
