@@ -26,6 +26,7 @@ function selectChatter(event){
         idPaziente= event.target.closest("select").value;
         document.getElementById("idPazienteForm").value = idPaziente;
         document.getElementById("chatWindow").innerHTML = "";
+        getChat();
     }
 }
 
@@ -49,18 +50,20 @@ function getChat(){
             } else {
                 switch (req.status){
                     case 400: // bad request
-                    alert(req.responseText);
+                    //alert(req.responseText);
+                    window.location = "index.html";
                     break;
                     case 401: // unauthorized
-                    alert(req.responseText);
+                   // alert(req.responseText);
                     window.location = "index.html";
                     break;
                     case 403: //Forbidden
-                    alert(req.responseText);
+                   // alert(req.responseText);
                     window.location = "index.html";
                     break;
                     case 500: // server error
-                    alert(req.responseText);
+                   // alert(req.responseText);
+                    window.location = "index.html";
                     break;
                     }//
                     return;
@@ -88,18 +91,20 @@ function getArr(){
             } else {
                 switch (req.status){
                     case 400: // bad request
-                    alert(req.responseText);
+                    //alert(req.responseText);
+                    window.location = "index.html";
                     break;
                     case 401: // unauthorized
-                    alert(req.responseText);
+                    //alert(req.responseText);
                     window.location = "index.html";
                     break;
                     case 403: //Forbidden
-                    alert(req.responseText);
+                  //  alert(req.responseText);
                     window.location = "index.html";
                     break;
                     case 500: // server error
-                    alert(req.responseText);
+                    //alert(req.responseText);
+                    window.location = "index.html";
                     break;
                     }//
                     return;
@@ -196,18 +201,20 @@ function render(messageArray){
             } else {
                 switch (req.status){
                     case 400: // bad request
-                    alert(req.responseText);
+                    //alert(req.responseText);
+                    window.location = "index.html";
                     break;
                     case 401: // unauthorized
-                    alert(req.responseText);
+                   // alert(req.responseText);
                     window.location = "index.html";
                     break;
                     case 403: //Forbidden
-                    alert(req.responseText);
+                   // alert(req.responseText);
                     window.location = "index.html";
                     break;
                     case 500: // server error
-                    alert(req.responseText);
+                   // alert(req.responseText);
+                    window.location = "index.html";
                     break;
                     }//
                     return;

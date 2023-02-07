@@ -45,18 +45,20 @@ function fetch(){
             } else {
                 switch (req.status){
                     case 400: // bad request
-                    alert(req.responseText);
+                   // alert(req.responseText);
+                    window.location = "index.html";
                     break;
                     case 401: // unauthorized
-                    alert(req.responseText);
+                    //alert(req.responseText);
                     window.location = "index.html";
                     break;
                     case 403: //Forbidden
-                    alert(req.responseText);
+                   // alert(req.responseText);
                     window.location = "index.html";
                     break;
                     case 500: // server error
-                    alert(req.responseText);
+                    //alert(req.responseText);
+                    window.location = "index.html";
                     break;
                     }//
                     return;
@@ -113,18 +115,20 @@ function deleteAll(){
             } else {
                 switch (req.status){
                     case 400: // bad request
-                    alert(req.responseText);
+                    //alert(req.responseText);
+                    window.location = "index.html";
                     break;
                     case 401: // unauthorized
-                    alert(req.responseText);
+                    //alert(req.responseText);
                     window.location = "index.html";
                     break;
                     case 403: //Forbidden
-                    alert(req.responseText);
+                    //alert(req.responseText);
                     window.location = "index.html";
                     break;
                     case 500: // server error
-                    alert(req.responseText);
+                    //alert(req.responseText);
+                    window.location = "index.html";
                     break;
                     }//
                     return;

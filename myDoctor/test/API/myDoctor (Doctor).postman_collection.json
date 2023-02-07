@@ -1,0 +1,819 @@
+{
+	"info": {
+		"_postman_id": "f28fb2b1-f4fa-4391-94da-5b919c99edfc",
+		"name": "myDoctor (Doctor)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20043184"
+	},
+	"item": [
+		{
+			"name": "Login (wrong credentials)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/CheckDoctorCredentials?username=x&password=y",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"CheckDoctorCredentials"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "x"
+						},
+						{
+							"key": "password",
+							"value": "y"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login (existing user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/CheckDoctorCredentials?username=dott1&password=banana",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"CheckDoctorCredentials"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "dott1"
+						},
+						{
+							"key": "password",
+							"value": "banana"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Agenda",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/Agenda",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"Agenda"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CancelAppointment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/CancelAppointment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"CancelAppointment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ChatMessage",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/ChatMessage",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"ChatMessage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteAppointment (wrong Id)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/DeleteAppointment?appointmentId=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"DeleteAppointment"
+					],
+					"query": [
+						{
+							"key": "appointmentId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteAppointment (appointment in past)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/DeleteAppointment?appointmentId=19",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"DeleteAppointment"
+					],
+					"query": [
+						{
+							"key": "appointmentId",
+							"value": "19"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteAppointment (not owner)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/DeleteAppointment?appointmentId=38",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"DeleteAppointment"
+					],
+					"query": [
+						{
+							"key": "appointmentId",
+							"value": "38"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteTimeband (wrong Id)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/DeleteTimeband?timebandId=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"DeleteTimeband"
+					],
+					"query": [
+						{
+							"key": "timebandId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteTimeband (timeband in past)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/DeleteTimeband?timebandId=52",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"DeleteTimeband"
+					],
+					"query": [
+						{
+							"key": "timebandId",
+							"value": "52"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteTimeband (not owner)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/DeleteTimeband?timebandId=60",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"DeleteTimeband"
+					],
+					"query": [
+						{
+							"key": "timebandId",
+							"value": "60"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetFile (wrong Id)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/GetFile?id=9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"GetFile"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "9"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetFile (not owner)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/GetFile?id=62",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"GetFile"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "62"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MakeAppointment (appointment in past)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/MakeAppointment?disponibilitaId=59&date=2023-01-29&inizio=13:00&fine=13:30&idPaziente=2&note",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"MakeAppointment"
+					],
+					"query": [
+						{
+							"key": "disponibilitaId",
+							"value": "59"
+						},
+						{
+							"key": "date",
+							"value": "2023-01-29"
+						},
+						{
+							"key": "inizio",
+							"value": "13:00"
+						},
+						{
+							"key": "fine",
+							"value": "13:30"
+						},
+						{
+							"key": "idPaziente",
+							"value": "2"
+						},
+						{
+							"key": "note",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MakeAppointment (non existing patient)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/MakeAppointment?disponibilitaId=59&date=2023-02-29&inizio=13:00&fine=13:30&idPaziente=7&note",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"MakeAppointment"
+					],
+					"query": [
+						{
+							"key": "disponibilitaId",
+							"value": "59"
+						},
+						{
+							"key": "date",
+							"value": "2023-02-29"
+						},
+						{
+							"key": "inizio",
+							"value": "13:00"
+						},
+						{
+							"key": "fine",
+							"value": "13:30"
+						},
+						{
+							"key": "idPaziente",
+							"value": "7"
+						},
+						{
+							"key": "note",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MakeTimeband (timeband in past)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/MakeTimeband?data=2023-01-01&inizio=10:00&fine=10:05&minutes=20",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"MakeTimeband"
+					],
+					"query": [
+						{
+							"key": "data",
+							"value": "2023-01-01"
+						},
+						{
+							"key": "inizio",
+							"value": "10:00"
+						},
+						{
+							"key": "fine",
+							"value": "10:05"
+						},
+						{
+							"key": "minutes",
+							"value": "20"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ModifyTimeband (timeband in past)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/ModifyTimeband?timebandId=2&data=2023-01-01&inizio=10:00&fine=11:00&minutes=20",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"ModifyTimeband"
+					],
+					"query": [
+						{
+							"key": "timebandId",
+							"value": "2"
+						},
+						{
+							"key": "data",
+							"value": "2023-01-01"
+						},
+						{
+							"key": "inizio",
+							"value": "10:00"
+						},
+						{
+							"key": "fine",
+							"value": "11:00"
+						},
+						{
+							"key": "minutes",
+							"value": "20"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ModifyTimeband (not owner)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/ModifyTimeband?timebandId=60&data=2023-02-07&inizio=10:00&fine=11:00&minutes=20",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"ModifyTimeband"
+					],
+					"query": [
+						{
+							"key": "timebandId",
+							"value": "60"
+						},
+						{
+							"key": "data",
+							"value": "2023-02-07"
+						},
+						{
+							"key": "inizio",
+							"value": "10:00"
+						},
+						{
+							"key": "fine",
+							"value": "11:00"
+						},
+						{
+							"key": "minutes",
+							"value": "20"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/myDoctor/Logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"myDoctor",
+						"Logout"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
