@@ -75,5 +75,9 @@ public class Day {
 	public boolean isPast() {
 		return !day.isBefore(LocalDate.now().minusDays(1));
 	}
+	
+	public boolean isOld() {
+		return !day.isBefore(LocalDate.now());
+	}
 
 }

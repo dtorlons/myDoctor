@@ -105,7 +105,7 @@
             
             <div th:text="${giorno.formattedDay}"  class="calendarDay"></div>
             <br>
-            <div class="addButton" th:if="${giorno.isPast}" th:date="${giorno.dayOfYear}"><img src="images/add-button.png" alt="" style="width:25px; vertical-align: middle; font-size: 14px; ">&nbsp;Aggiungi una fascia oraria</div>
+            <div class="addButton" th:if="${giorno.isOld}" th:date="${giorno.dayOfYear}"><img src="images/add-button.png" alt="" style="width:25px; vertical-align: middle; font-size: 14px; ">&nbsp;Aggiungi una fascia oraria</div>
                 <div th:if="${#lists.isEmpty(giorno.timebands)}"> <br> <span style="font-size: 12px;">Nessuna fascia oraria inserita per questo giorno</span></div>
                 
                 <div th:each="disp : ${giorno.timebands}"  class="timeband">
